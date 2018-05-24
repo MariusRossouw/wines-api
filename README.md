@@ -1,5 +1,5 @@
-# canserve-api
-Cansa api repo
+# wines-api
+Wines api repo
 
 # no development allowed on Master branch
 

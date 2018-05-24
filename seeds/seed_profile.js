@@ -9,7 +9,7 @@ $$
   var test_profile = [
 		{'id': 1, 'profile_type': 'Individual', 'email':'michiel@stratech.co.za', 'first_name':'Michiel', 'last_name':'de Beer', 'name': 'Michiel de Beer', 'password':'admin1234', 'mobile_number':'0711231234','verified': true},
     {'id': 2, 'profile_type': 'Individual', 'email':'marius@stratech.co.za', 'first_name':'Marius', 'last_name':'Rossouw', 'name': 'Marius Rossouw', 'password':'admin1234', 'mobile_number':'0793327238','verified': true},
-    {'id': 3, 'profile_type': 'Individual', 'email':'hymnect@gmail.com', 'first_name':'Hymne', 'last_name':'Rossouw', 'name': 'Hymne Rossouw', 'password':'admin123@8', 'mobile_number':'0636601501','verified': true}
+    {'id': 3, 'profile_type': 'Individual', 'email':'hymnect@gmail.com', 'first_name':'Hymne', 'last_name':'Rossouw', 'name': 'Hymne Rossouw', 'password':'admin1234', 'mobile_number':'0636601501','verified': true}
   ];
 
   for(var i = 0; i < test_profile.length; i++){
