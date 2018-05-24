@@ -1,0 +1,46 @@
+{
+  "name": "jando_api",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "async": "*",
+    "body-parser": "*",
+    "express": "3.5.1",
+    "js-object-pretty-print": "*",
+    "jsesc": "*",
+    "markdown": "*",
+    "markdown-pdf": "*",
+    "md-to-html": "*",
+    "method-override": "*",
+    "moment": "*",
+    "express-fileupload": "*",
+    "nconf": "*",
+    "pg": "6.4.2",
+    "pg-monitor": "*",
+    "pg-promise": "*",
+    "sendgrid": "^4.8.2",
+    "serve-favicon": "*",
+    "soap": "*",
+    "tedious": "*",
+    "underscore": "1.6.0",
+    "xml2js": "*",
+    "xmlbuilder": "*",
+    "pdfkit": "*",
+    "express-session": "*",
+    "cookie-parser": "*"
+  },
+  "dependencies_old": {
+    "jade": "*",
+    "nodemailer": "*",
+    "redis-sessions": "*",
+    "socket.io": "*",
+    "mongodb": "*",
+    "pdfkit": "*",
+    "imagemagick": "*",
+    "multer": "0.1.7",
+    "quickthumb": "*"
+  }
+}

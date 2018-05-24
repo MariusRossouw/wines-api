@@ -1,0 +1,37 @@
+{
+  "name": "cansa_api",
+  "version": "0.0.1",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stratech-team/canserve-api.git"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/stratech-team/canserve-api/issues"
+  },
+  "homepage": "",
+  "dependencies": {
+    "async": "2.5.0",
+    "body-parser": "1.18.2",
+    "express": "4.15.4",
+    "express-fileupload": "0.3.0",
+    "express-session": "1.15.6",
+    "method-override": "2.3.10",
+    "moment": "2.19.2",
+    "nconf": "0.8.4",
+    "serve-favicon": "",
+    "path": "0.12.7",
+    "sendgrid": "4.8.2",
+    "pg-promise": "6.5.2",
+    "request": "2.83.0",
+    "state-machine-cat": "2.1.5",
+    "underscore": "1.8.3",
+    "unirest": "0.5.1",
+    "url": "0.11.0",
+    "pg": "6.4.2"
+  }
+}
