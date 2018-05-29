@@ -139,7 +139,7 @@
         return;
     }
 
-    var sql_insert = 'insert into tb_province (abrv, name, create_date, create_time, create_display_time) ';
+    var sql_insert = 'insert into tb_province (abrv, province_name, create_date, create_time, create_display_time) ';
     sql_insert += 'values($1,$2,$3,$4,$5) returning id; ';
     sql_res = plv8.execute(sql_insert, abrv, name, create_date, create_time, create_display_time);
     var province_id = sql_res.id;
