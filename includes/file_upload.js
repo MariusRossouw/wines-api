@@ -6,7 +6,8 @@ var moment = require("moment");
 var request = require("request");
 var utils = require("../includes/utils.js");
 var fs = require('fs');
-
+var xlsx = require('xlsx');
+var path = require('path');
 
 exports.file_upload = function(req, res) {
   console.log('ALL: ' , req);
@@ -26,7 +27,6 @@ exports.file_upload = function(req, res) {
       });
   }
 };
-
 
 exports.file_upload_64 = function(req, res) {
 
@@ -68,17 +68,93 @@ exports.file_upload_64 = function(req, res) {
       res.send(200, new_file_name);
     }
   });
+};
 
-  };
+// ===== Wine specfic =====
 
+// store file contents to DB
+var store_wine_list = function(pdb, file){
+  return new Promise((resolve,reject)=>{
+    try {
+      var workbook = xlsx.readFile(file);
+      var first_sheet_name = workbook.SheetNames[0];
+      var worksheet = workbook.Sheets[first_sheet_name];
+    } catch (err) {
+      console.log(err);
+      reject({http_code: 500, message: 'Failed to read xl file'})
+    }
+    console.log(worksheet['A1'].v);
 
-
-  exports.deletePhoto = function (req, res) {
-    var fileName = req.body.img;
-    var file_path = __dirname + "/../uploads/" + fileName + ".png";
-    var stream = fs.createReadStream(fileName);
-    stream.pipe(res).once("close", function () {
-        stream.close();
-        deleteFile(fileName);
+    var proc_name = 'store_wine_list_xlsx';
+    pdb.proc(proc_name, worksheet)
+    .then(data => {
+      console.log(data)
+      resolve(data[proc_name])
     })
-  };
+    .catch(err => {
+      console.log('PROC ERR: ',err)
+      reject({http_code: 500, message: 'Failed to store wine list'})
+    })
+  });
+}
+
+// store the file on the server
+var store_wine_list_file = function(files){
+  return new Promise((resolve,reject)=>{
+    var file_name = files.file.name;
+    var file_path = path.join(__dirname ,'/../','uploads/' , file_name);
+
+    files.file.mv(file_path, function(err) {
+      if (err){
+          console.log(err);
+          reject({http_code: 500, message: 'Failed to store xl file'})
+      }
+      resolve(file_path)
+    });
+  })
+}
+
+// remove a file with the specified path
+var remove_file = function(path){
+  return new Promise((resolve,reject) => {
+    fs.unlink(path, (err) => {
+      if (err) reject(err);
+      console.log(path + ' was deleted');
+      resolve({message:'file removed', http_code: 200})
+    });
+  })
+}
+
+exports.upload_wine_list = function(req, res){
+  if(!req.files){
+    console.log('file not found');
+    res.status(500).send({http_code: 500, message: 'file not found'});
+  }else{
+    var return_data = {};
+    var path = '';
+
+    console.log(req.files);
+    console.log('Body: ' , req.body);
+
+    // store the file on the server
+    store_wine_list_file(req.files)
+    .then(dataPath => {
+      path = dataPath
+      // store the file contents in the DB
+      return store_wine_list(req.pdb, dataPath)
+    })
+    .then(data => {
+      return_data = data;
+      // remove the file off the server when done
+      return remove_file(path)
+    })
+    .then(dataStored =>{
+      res.status(200).send(return_data);
+    })
+    .catch(err =>{
+      console.log(err)
+      res.status(500).send(err);
+    })
+  }
+}
+

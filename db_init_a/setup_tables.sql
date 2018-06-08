@@ -1,4 +1,26 @@
+-- tables need to be dropped in a specific order due to dependencies
+
 drop table if exists tb_api_log;
+DROP TABLE IF EXISTS tb_transactions;
+DROP TABLE IF EXISTS tb_merchant_profile_map;
+DROP TABLE IF EXISTS tb_profile_product_map;
+DROP TABLE IF EXISTS tb_distributor_product_map;
+DROP TABLE IF EXISTS tb_wine_farm_profile_map;
+DROP TABLE IF EXISTS tb_wine_farm_product_map;
+DROP TABLE IF EXISTS tb_wine_farm;
+DROP TABLE IF EXISTS tb_product;
+DROP TABLE IF EXISTS tb_product_type;
+DROP TABLE IF EXISTS tb_distributor;
+DROP TABLE IF EXISTS tb_merchant;
+DROP TABLE IF EXISTS tb_entity_document_map;
+DROP TABLE IF EXISTS tb_entity_type;
+DROP TABLE IF EXISTS tb_document;
+drop table IF EXISTS tb_profile;
+DROP TABLE IF EXISTS tb_profile_type;
+DROP TABLE IF EXISTS tb_division;
+DROP TABLE IF EXISTS tb_region;
+DROP TABLE IF EXISTS tb_province;
+
 CREATE TABLE IF NOT EXISTS tb_api_log (
   log_id SERIAL PRIMARY KEY,
 
@@ -14,7 +36,6 @@ CREATE TABLE IF NOT EXISTS tb_api_log (
   update_time timestamp without time zone default (now() at time zone 'utc')
 );
 
-DROP TABLE IF EXISTS tb_province;
 CREATE TABLE IF NOT EXISTS tb_province(
   province_id SERIAL PRIMARY KEY,
 
@@ -25,7 +46,6 @@ CREATE TABLE IF NOT EXISTS tb_province(
   update_time timestamp without time zone default (now() at time zone 'utc')
 );
 
-DROP TABLE IF EXISTS tb_region;
 CREATE TABLE IF NOT EXISTS tb_region(
   region_id SERIAL PRIMARY KEY,
   province_id INTEGER references tb_province(province_id),
@@ -37,7 +57,7 @@ CREATE TABLE IF NOT EXISTS tb_region(
   update_time timestamp without time zone default (now() at time zone 'utc')
 );
 
-DROP TABLE IF EXISTS tb_division;
+
 CREATE TABLE IF NOT EXISTS tb_division(
   division_id SERIAL PRIMARY KEY,
 
@@ -48,7 +68,7 @@ CREATE TABLE IF NOT EXISTS tb_division(
   update_time timestamp without time zone default (now() at time zone 'utc')
 );
 
-DROP TABLE IF EXISTS tb_profile_type;
+
 CREATE TABLE IF NOT EXISTS tb_profile_type(
   profile_type_id serial primary key,
   profile_type varchar(50),
@@ -58,7 +78,7 @@ CREATE TABLE IF NOT EXISTS tb_profile_type(
   update_time timestamp without time zone default (now() at time zone 'utc')
 );
 
-drop table IF EXISTS tb_profile;
+
 CREATE TABLE IF NOT EXISTS tb_profile(
   profile_id SERIAL PRIMARY KEY,
   profile_type_id int references tb_profile_type(profile_type_id),
@@ -92,7 +112,7 @@ CREATE TABLE IF NOT EXISTS tb_profile(
   verified_time timestamp without time zone
 );
 
-DROP TABLE IF EXISTS tb_document;
+
 CREATE TABLE IF NOT EXISTS tb_document(
   document_id serial primary key,
   server_path text,
@@ -105,7 +125,7 @@ CREATE TABLE IF NOT EXISTS tb_document(
   delete_time timestamp without time zone default (now() at time zone 'utc')
 );
 
-DROP TABLE IF EXISTS tb_entity_type;
+
 CREATE TABLE IF NOT EXISTS tb_entity_type(
   entity_type_id serial primary key,
   entity_type varchar(20),
@@ -113,7 +133,7 @@ CREATE TABLE IF NOT EXISTS tb_entity_type(
 );
 
 -- link a document to an entity(profile, merchant, product)
-DROP TABLE IF EXISTS tb_entity_document_map;
+
 CREATE TABLE IF NOT EXISTS tb_entity_document_map(
   entity_document_id serial primary key,
   document_id int references tb_document(document_id),
@@ -125,7 +145,7 @@ CREATE TABLE IF NOT EXISTS tb_entity_document_map(
   update_time timestamp without time zone default (now() at time zone 'utc')
 );
 
-DROP TABLE IF EXISTS tb_merchant;
+
 CREATE TABLE IF NOT EXISTS tb_merchant(
   merchant_id SERIAL PRIMARY KEY,
   region_id int references tb_region(region_id),
@@ -146,7 +166,7 @@ CREATE TABLE IF NOT EXISTS tb_merchant(
   update_time timestamp without time zone default (now() at time zone 'utc')
 );
 
-DROP TABLE IF EXISTS tb_distributor;
+
 CREATE TABLE IF NOT EXISTS tb_distributor(
   distributor_id SERIAL PRIMARY KEY,
   province_id INTEGER references tb_province(province_id),
@@ -165,18 +185,18 @@ CREATE TABLE IF NOT EXISTS tb_distributor(
   update_time timestamp without time zone default (now() at time zone 'utc')
 );
 
-DROP TABLE IF EXISTS tb_product_type;
+
 CREATE TABLE IF NOT EXISTS tb_product_type(
   product_type_id SERIAL PRIMARY KEY,
 
   abrv VARCHAR(5),
-  product_type VARCHAR(20),
+  product_type VARCHAR(20) UNIQUE,
   jdata jsonb,
   create_time timestamp without time zone default (now() at time zone 'utc'),
   update_time timestamp without time zone default (now() at time zone 'utc')
 );
 
-DROP TABLE IF EXISTS tb_product;
+
 CREATE TABLE IF NOT EXISTS tb_product(
   product_id SERIAL PRIMARY KEY,
   product_type_id int references tb_product_type(product_type_id),
@@ -187,7 +207,7 @@ CREATE TABLE IF NOT EXISTS tb_product(
   vintage VARCHAR(50),
   blend boolean DEFAULT FALSE,
   color VARCHAR(50),
-  item_code VARCHAR(50),
+  item_code VARCHAR(50) UNIQUE,
   size VARCHAR(50),
   status varchar(200),
   jdata jsonb,
@@ -195,11 +215,11 @@ CREATE TABLE IF NOT EXISTS tb_product(
   update_time timestamp without time zone default (now() at time zone 'utc')
 );
 
-DROP TABLE IF EXISTS tb_wine_farm;
+
 CREATE TABLE IF NOT EXISTS tb_wine_farm(
   wine_farm_id serial primary key,
 
-  farm_name varchar(200),
+  farm_name varchar(200) UNIQUE,
   address_line_1 varchar(200),
   address_line_2 varchar(200),
   address_line_3 varchar(200),
@@ -212,52 +232,58 @@ CREATE TABLE IF NOT EXISTS tb_wine_farm(
   update_time timestamp without time zone default (now() at time zone 'utc')
 );
 
-DROP TABLE IF EXISTS tb_wine_farm_product_map;
+
 CREATE TABLE IF NOT EXISTS tb_wine_farm_product_map(
   wine_farm_product_id serial primary key,
   wine_farm_id int references tb_wine_farm(wine_farm_id) not null,
   product_id int references tb_product(product_id) not null,
 
-  create_time timestamp without time zone default (now() at time zone 'utc')
+  create_time timestamp without time zone default (now() at time zone 'utc'),
+
+  CONSTRAINT u_wine_farm_product UNIQUE (wine_farm_id,product_id)
 );
 
-DROP TABLE IF EXISTS tb_wine_farm_profile_map;
+
 CREATE TABLE IF NOT EXISTS tb_wine_farm_profile_map(
   wine_farm_profile_id serial primary key,
   wine_farm_id int references tb_wine_farm(wine_farm_id) not null,
   profile_id int references tb_profile(profile_id) not null,
   
-  create_time timestamp without time zone default (now() at time zone 'utc')
+  create_time timestamp without time zone default (now() at time zone 'utc'),
+
+  CONSTRAINT u_wine_farm_profile UNIQUE (wine_farm_id,profile_id)
 );
 
-DROP TABLE IF EXISTS tb_distributor_product_map;
 CREATE TABLE IF NOT EXISTS tb_distributor_product_map(
   distributor_product_id serial primary key,
   distributor_id int references tb_distributor(distributor_id) not null,
   product_id int references tb_product(product_id) not null,
   
-  create_time timestamp without time zone default (now() at time zone 'utc')
+  create_time timestamp without time zone default (now() at time zone 'utc'),
+
+  CONSTRAINT u_distributor_product UNIQUE (distributor_id,product_id)
 );
 
-DROP TABLE IF EXISTS tb_profile_product_map;
 CREATE TABLE IF NOT EXISTS tb_profile_product_map(
   profile_product_id serial primary key,
   profile_id int references tb_profile(profile_id) not null,
   product_id int references tb_product(product_id) not null,
 
-  create_time timestamp without time zone default (now() at time zone 'utc')
+  create_time timestamp without time zone default (now() at time zone 'utc'),
+
+  CONSTRAINT u_profile_product UNIQUE (profile_id,product_id)
 );
 
-DROP TABLE IF EXISTS tb_merchant_profile_map;
 CREATE TABLE IF NOT EXISTS tb_merchant_profile_map(
   merchant_profile_id serial primary key,
   profile_id int references tb_profile(profile_id) not null,
   merchant_id int references tb_merchant(merchant_id) not null,
 
-  create_time timestamp without time zone default (now() at time zone 'utc')
+  create_time timestamp without time zone default (now() at time zone 'utc'),
+
+  CONSTRAINT u_merchant_profile UNIQUE (merchant_id,profile_id)
 );
 
-DROP TABLE IF EXISTS tb_transactions;
 CREATE TABLE IF NOT EXISTS tb_transactions(
   transaction_id SERIAL PRIMARY KEY,
   product_id int references tb_product(product_id) not null,

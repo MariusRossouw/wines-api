@@ -8,6 +8,12 @@ var methodOverride = require('method-override');
 var nconf = require('nconf');
 var pgp = require('pg-promise')({
     // Initialization Options
+    query: function (e) {
+        console.log('QUERY:', e.query);
+        if (e.params) {
+            console.log('PARAMS:', e.params);
+        }
+    }
 });
 var utils = require("./includes/utils.js");
 var fileUpload = require('express-fileupload');
@@ -98,28 +104,19 @@ app.post('/change_verification_email', email.change_verification_email);
 app.post('/welcome_email', email.welcome_email);
 app.post('/forgot_password', email.forgot_password);
 
-
-
-// var sms = require("./routes/sms.js");
-// app.post('/otp_send', function(req, res){ sms.otp_send(req, res); });
-
 var pdf = require('./routes/pdf_one.js');
 app.post('/add_one_spooler_pdf', pdf.pdf_spool_one);
-
 
 var files = require('./includes/file_upload.js');
 app.post('/file_upload', files.file_upload);
 app.post('/file_upload_64', files.file_upload_64);
 
-
-
+app.post('/uploads/wine_list', files.upload_wine_list)
 
 //API Methods: Lists
 
 app.post('/*', function(req, res){ utils.pg_http_gen_new(req, res, '_'); });
 app.get('/*', function(req, res){ utils.pg_http_gen_new(req, res, '_'); });
-
-
 
 // ============== Start listening ===========================
 
