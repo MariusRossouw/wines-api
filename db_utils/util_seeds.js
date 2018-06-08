@@ -76,7 +76,7 @@
   };
 
 
-  plv8.ufn.new_profile = function(id, profile_type, email, first_name, last_name, name, password, mobile_number, verified){
+  plv8.ufn.new_profile = function(profile_id, profile_type, email, first_name, last_name, name, password, mobile_number, verified){
                                 
 		var md = moment();
 		var create_date = md.format("YYYY-MM-DD");
@@ -89,18 +89,18 @@
       data:{}
     };
 
-    var sql = 'select id from tb_profile where email = $1;';
+    var sql = 'select profile_id from tb_profile where email = $1;';
 
 		var sqlres = plv8.execute(sql, email);
 		if(sqlres.length > 0){
 			return;
 		}
 
-		var sql_insert = 'insert into tb_profile (id, profile_type, email, first_name, last_name, name, password, mobile_number, verified, create_date, create_time, create_display_time) ';
-    sql_insert += 'values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) returning id; ';
+		var sql_insert = 'insert into tb_profile (profile_id, profile_type, email, first_name, last_name, name, password, mobile_number, verified, create_date, create_time, create_display_time) ';
+    sql_insert += 'values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) returning profile_id; ';
 
-		sql_res = plv8.execute(sql_insert, id, profile_type, email, first_name, last_name, name, password, mobile_number, verified, create_date, create_time, create_display_time);
-    var profile_id = sql_res[0].id;
+		sql_res = plv8.execute(sql_insert, profile_id, profile_type, email, first_name, last_name, name, password, mobile_number, verified, create_date, create_time, create_display_time);
+    var profile_id = sql_res[0].profile_id;
 
     result.data = sql_res;
     result.profile_id = profile_id;
