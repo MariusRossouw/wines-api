@@ -32,7 +32,7 @@ var result = {
     result.data = query_result_email[0];
   }
 
-  var s_mobile = "select * from tb_profile where mobile_number = $1;";
+  var s_mobile = "select * from tb_profile where concat(mobile_country_code,mobile_no_exl) = $1;";
   plv8.elog(INFO, s_mobile);
   var query_result_mobile = plv8.execute(s_mobile,http_req.body.email_mobile_number);
 

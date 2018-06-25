@@ -76,7 +76,7 @@
   };
 
 
-  plv8.ufn.new_profile = function(profile_id, profile_type, email, first_name, last_name, name, password, mobile_number, verified){
+  plv8.ufn.new_profile = function(profile_type, email, first_name, last_name, name, password, mobile_no_exl, mobile_country_code, verified){
                                 
 		var md = moment();
 		var create_date = md.format("YYYY-MM-DD");
@@ -96,10 +96,10 @@
 			return;
 		}
 
-		var sql_insert = 'insert into tb_profile (profile_id, profile_type, email, first_name, last_name, name, password, mobile_number, verified, create_date, create_time, create_display_time) ';
-    sql_insert += 'values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) returning profile_id; ';
+		var sql_insert = 'insert into tb_profile (profile_type_id, email, first_name, last_name, name, password, mobile_no_exl, mobile_country_code, verified) ';
+    sql_insert += 'values($1,$2,$3,$4,$5,$6,$7,$8,$9) returning profile_id; ';
 
-		sql_res = plv8.execute(sql_insert, profile_id, profile_type, email, first_name, last_name, name, password, mobile_number, verified, create_date, create_time, create_display_time);
+		sql_res = plv8.execute(sql_insert, profile_type, email, first_name, last_name, name, password, mobile_no_exl, mobile_country_code, verified);
     var profile_id = sql_res[0].profile_id;
 
     result.data = sql_res;
@@ -128,10 +128,6 @@
   };
 
   plv8.ufn.new_province = function(abrv, name){
-    var md = moment();
-    var create_date = md.format("YYYY-MM-DD");
-    var create_time = md.format('YYYY-MM-DDTHH:mm:ss');
-    var create_display_time = md.format('YYYY-MM-DD HH:mm');
 
     var sql = 'select abrv from tb_province where abrv = $1;';
     var sqlres = plv8.execute(sql, abrv);
@@ -139,10 +135,10 @@
         return;
     }
 
-    var sql_insert = 'insert into tb_province (abrv, province_name, create_date, create_time, create_display_time) ';
-    sql_insert += 'values($1,$2,$3,$4,$5) returning id; ';
-    sql_res = plv8.execute(sql_insert, abrv, name, create_date, create_time, create_display_time);
-    var province_id = sql_res.id;
+    var sql_insert = 'insert into tb_province (abrv, province_name) ';
+    sql_insert += 'values($1,$2) returning province_id; ';
+    sql_res = plv8.execute(sql_insert, abrv, name);
+    var province_id = sql_res.province_id;
   };
 
   plv8.ufn.new_volunteer_type = function(description){

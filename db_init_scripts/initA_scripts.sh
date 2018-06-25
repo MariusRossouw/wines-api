@@ -7,7 +7,7 @@
 
 # DROP DATABASE wines;
 
-# CREATE DATABASE wines
+# CREATE DATABASE wcwines
 #   WITH OWNER = nodejs
 #        ENCODING = 'UTF8'
 #        TABLESPACE = pg_default
@@ -29,7 +29,7 @@ node db_init_util/util_module_save.js --folder db_utils
 node db_init_util/call_stored_function --name plv8_util_module_load_all
 
 #setup tables and stored functions
-node db_init_util/run_sql_script.js --file db_init_a/setup_tables.sql
+#node db_init_util/run_sql_script.js --file db_init_a/setup_tables.sql
 node db_init_util/run_sql_script.js --folder db_functions
 
 #seed data

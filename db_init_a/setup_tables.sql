@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS tb_division(
 
 CREATE TABLE IF NOT EXISTS tb_profile_type(
   profile_type_id serial primary key,
-  profile_type varchar(50),
+  profile_type varchar(50) unique,
 
   jdata jsonb,
   create_time timestamp without time zone default (now() at time zone 'utc'),

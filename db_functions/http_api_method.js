@@ -114,8 +114,8 @@ if(!plv8.ufn){
   function log_request(){
     var sql = 'insert into tb_api_log (orig_id, type, data, error, create_time, action_type, action_name) values ($1, $2, $3, $4, $5, $6, $7) returning id';
     var sql_res = plv8.execute(sql, 0, 'api', http_req, result.error_code, create_time, 'stored_function', function_name);
-    if(sql_res.length > 0 && sql_res[0].id){
-      http_req.log_id = sql_res[0].id;
+    if(sql_res.length > 0 && sql_res[0].log_id){
+      http_req.log_id = sql_res[0].log_id;
     }
   };
   function log_result(){
