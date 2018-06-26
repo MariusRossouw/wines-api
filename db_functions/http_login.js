@@ -30,11 +30,16 @@ if (!plv8.ufn) {
     return(result);
   }
 
+  var mobile_no_exl = '';
+  if(http_req.body.mobile_number){
+    mobile_no_exl = http_req.body.mobile_number.substr(1);
+  }
+
   var addr_details = {
-    physical_address: '',
-    physical_suburb: '',
-    physical_city_town: '',
-    physical_postal_code: '',
+    address_line_1: '',
+    address_line_2: '',
+    address_line_3: '',
+    address_line_4: '',
     physical_province_id: 0,
     province: ''
   };
@@ -42,10 +47,10 @@ if (!plv8.ufn) {
   // var s = "select * from tb_profile where email = $1 and password = $2;";
   // var s = "select \
   // p.*, \
-  // a.physical_address, \
-  // a.physical_suburb, \
-  // a.physical_city_town, \
-  // a.physical_postal_code, \
+  // a.address_line_1, \
+  // a.address_line_2, \
+  // a.address_line_3, \
+  // a.address_line_4, \
   // a.physical_province_id, \
   // pr.name province \
   // from tb_profile p \
@@ -60,10 +65,10 @@ if (!plv8.ufn) {
 
 
   if(query_result.length == 0){
-    // not found with email - try mobile_number
-    var s1 = "select * from tb_profile where mobile_number = $1 and password = $2;";
+    // not found with email - try mobile_no_exl
+    var s1 = "select * from tb_profile where mobile_no_exl = $1 and password = $2;";
     plv8.elog(INFO, s1);
-    var query_result1 = plv8.execute(s1,http_req.body.mobile_number,http_req.body.password);
+    var query_result1 = plv8.execute(s1,http_req.body.mobile_no_exl,http_req.body.password);
     if(query_result1.length == 0){
       result.http_code = 403;
       result.message = 'Invalid Email/ Mobile Number or Password';
@@ -75,10 +80,10 @@ if (!plv8.ufn) {
         var profile_addr_id = query_result1[0].address_id;
   
         var s_addr = "select \
-          a.physical_address, \
-          a.physical_suburb, \
-          a.physical_city_town, \
-          a.physical_postal_code, \
+          a.address_line_1, \
+          a.address_line_2, \
+          a.address_line_3, \
+          a.address_line_4, \
           a.physical_province_id, \
           p.name province \
           from tb_address a \
@@ -89,10 +94,10 @@ if (!plv8.ufn) {
         var query_result_addr = plv8.execute(s_addr,profile_addr_id);
   
         if(query_result_addr.length > 0) {
-          addr_details.physical_address = query_result_addr[0].physical_address ;
-          addr_details.physical_suburb = query_result_addr[0].physical_suburb ;
-          addr_details.physical_city_town = query_result_addr[0].physical_city_town ;
-          addr_details.physical_postal_code = query_result_addr[0].physical_postal_code ;
+          addr_details.address_line_1 = query_result_addr[0].address_line_1 ;
+          addr_details.address_line_2 = query_result_addr[0].address_line_2 ;
+          addr_details.address_line_3 = query_result_addr[0].address_line_3 ;
+          addr_details.address_line_4 = query_result_addr[0].address_line_4 ;
           addr_details.physical_province_id = query_result_addr[0].physical_province_id ;
           addr_details.province = query_result_addr[0].province ;
         }
@@ -122,10 +127,10 @@ if (!plv8.ufn) {
       var profile_addr_id = query_result[0].address_id;
 
       var s_addr = "select \
-        a.physical_address, \
-        a.physical_suburb, \
-        a.physical_city_town, \
-        a.physical_postal_code, \
+        a.address_line_1, \
+        a.address_line_2, \
+        a.address_line_3, \
+        a.address_line_4, \
         a.physical_province_id, \
         p.name province \
         from tb_address a \
@@ -136,10 +141,10 @@ if (!plv8.ufn) {
       var query_result_addr = plv8.execute(s_addr,profile_addr_id);
 
       if(query_result_addr.length > 0) {
-        addr_details.physical_address = query_result_addr[0].physical_address ;
-        addr_details.physical_suburb = query_result_addr[0].physical_suburb ;
-        addr_details.physical_city_town = query_result_addr[0].physical_city_town ;
-        addr_details.physical_postal_code = query_result_addr[0].physical_postal_code ;
+        addr_details.address_line_1 = query_result_addr[0].address_line_1 ;
+        addr_details.address_line_2 = query_result_addr[0].address_line_2 ;
+        addr_details.address_line_3 = query_result_addr[0].address_line_3 ;
+        addr_details.address_line_4 = query_result_addr[0].address_line_4 ;
         addr_details.physical_province_id = query_result_addr[0].physical_province_id ;
         addr_details.province = query_result_addr[0].province ;
       }
