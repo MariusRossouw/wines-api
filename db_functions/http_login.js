@@ -74,6 +74,7 @@ if (!plv8.ufn) {
       result.message = 'Invalid Email/ Mobile Number or Password';
       return(result);
     } else {
+      // find permissions and create nav
       // find address
 
       if (query_result1[0].address_id > 0) {
