@@ -76,7 +76,7 @@
   };
 
 
-  plv8.ufn.new_profile = function(profile_type, email, first_name, last_name, name, password, mobile_no_exl, mobile_country_code, verified){
+  plv8.ufn.new_profile = function(type, email, first_name, last_name, name, password, mobile_no_exl, mobile_country_code, verified){
                                 
 		var md = moment();
 		var create_date = md.format("YYYY-MM-DD");
@@ -89,6 +89,11 @@
       data:{}
     };
 
+    var s = "insert into tb_type(type) values($1) ON CONFLICT (type) \
+      DO UPDATE SET type=EXCLUDED.type RETURNING type_id";
+    var sres = plv8.execute(s, type);
+    var type_id = sres[0].type_id;
+
     var sql = 'select profile_id from tb_profile where email = $1;';
 
 		var sqlres = plv8.execute(sql, email);
@@ -96,11 +101,15 @@
 			return;
 		}
 
-		var sql_insert = 'insert into tb_profile (profile_type_id, email, first_name, last_name, name, password, mobile_no_exl, mobile_country_code, verified) ';
-    sql_insert += 'values($1,$2,$3,$4,$5,$6,$7,$8,$9) returning profile_id; ';
+		var sql_insert = 'insert into tb_profile (email, first_name, last_name, name, password, mobile_no_exl, mobile_country_code, verified) ';
+    sql_insert += 'values($1,$2,$3,$4,$5,$6,$7,$8) returning profile_id; ';
 
-		sql_res = plv8.execute(sql_insert, profile_type, email, first_name, last_name, name, password, mobile_no_exl, mobile_country_code, verified);
+		sql_res = plv8.execute(sql_insert, email, first_name, last_name, name, password, mobile_no_exl, mobile_country_code, verified);
     var profile_id = sql_res[0].profile_id;
+
+    var s = "insert into tb_profile_type_map(profile_id, type_id) values($1,$2) ON CONFLICT (profile_id,type_id) \
+      DO UPDATE SET profile_id=EXCLUDED.profile_id RETURNING profile_type_id";
+    var sres = plv8.execute(s, profile_id, type_id);
 
     result.data = sql_res;
     result.profile_id = profile_id;
