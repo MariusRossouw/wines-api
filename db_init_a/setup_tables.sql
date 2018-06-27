@@ -12,6 +12,7 @@ DROP TABLE IF EXISTS tb_product;
 DROP TABLE IF EXISTS tb_product_type;
 DROP TABLE IF EXISTS tb_distributor;
 DROP TABLE IF EXISTS tb_merchant;
+DROP TABLE IF EXISTS tb_merchant_group;
 DROP TABLE IF EXISTS tb_entity_document_map;
 DROP TABLE IF EXISTS tb_entity_type;
 DROP TABLE IF EXISTS tb_document;
@@ -40,7 +41,7 @@ CREATE TABLE IF NOT EXISTS tb_province(
   province_id SERIAL PRIMARY KEY,
 
   abrv VARCHAR(5),
-  province_name VARCHAR(20),
+  province_name VARCHAR(20) unique,
   jdata jsonb,
   create_time timestamp without time zone default (now() at time zone 'utc'),
   update_time timestamp without time zone default (now() at time zone 'utc')
@@ -51,7 +52,7 @@ CREATE TABLE IF NOT EXISTS tb_region(
   province_id INTEGER references tb_province(province_id),
 
   abrv VARCHAR(5),
-  name VARCHAR(20),
+  region_name VARCHAR(20) unique,
   jdata jsonb,
   create_time timestamp without time zone default (now() at time zone 'utc'),
   update_time timestamp without time zone default (now() at time zone 'utc')
@@ -62,7 +63,7 @@ CREATE TABLE IF NOT EXISTS tb_division(
   division_id SERIAL PRIMARY KEY,
 
   abrv VARCHAR(5),
-  name VARCHAR(20),
+  division_name VARCHAR(20) unique,
   jdata jsonb,
   create_time timestamp without time zone default (now() at time zone 'utc'),
   update_time timestamp without time zone default (now() at time zone 'utc')
@@ -104,8 +105,8 @@ CREATE TABLE IF NOT EXISTS tb_profile(
   address_line_4 varchar(200),
   jdata jsonb,
   status varchar(200),
-  rep_id int,
-  rep_name varchar(50),
+  rep_code varchar(200) unique,
+  rep_name varchar(50), 
   create_time timestamp without time zone default (now() at time zone 'utc'),
   update_time timestamp without time zone default (now() at time zone 'utc'),
   verified BOOLEAN DEFAULT FALSE,
@@ -145,15 +146,25 @@ CREATE TABLE IF NOT EXISTS tb_entity_document_map(
   update_time timestamp without time zone default (now() at time zone 'utc')
 );
 
+CREATE TABLE IF NOT EXISTS tb_merchant_group(
+  merchant_group_id serial primary key,
+  group_name varchar(200) unique,
+
+  jdata jsonb,
+  create_time timestamp without time zone default (now() at time zone 'utc'),
+  update_time timestamp without time zone default (now() at time zone 'utc')
+);
+
 
 CREATE TABLE IF NOT EXISTS tb_merchant(
   merchant_id SERIAL PRIMARY KEY,
   region_id int references tb_region(region_id),
-  devision_id int references tb_division(division_id),
+  division_id int references tb_division(division_id),
   province_id INTEGER references tb_province(province_id),
+  merchant_group_id INTEGER references tb_merchant_group(merchant_group_id),
 
   abrv VARCHAR(50),
-  merchant_name VARCHAR(200),
+  merchant_name VARCHAR(200) unique,
   address_line_1 varchar(200),
   address_line_2 varchar(200),
   address_line_3 varchar(200),
@@ -172,7 +183,7 @@ CREATE TABLE IF NOT EXISTS tb_distributor(
   province_id INTEGER references tb_province(province_id),
 
   abrv VARCHAR(50),
-  distributor_name VARCHAR(200),
+  distributor_name VARCHAR(200) unique,
   address_line_1 varchar(200),
   address_line_2 varchar(200),
   address_line_3 varchar(200),
@@ -209,6 +220,7 @@ CREATE TABLE IF NOT EXISTS tb_product(
   color VARCHAR(50),
   item_code VARCHAR(50) UNIQUE,
   size VARCHAR(50),
+  volume varchar(10),
   status varchar(200),
   jdata jsonb,
   create_time timestamp without time zone default (now() at time zone 'utc'),
@@ -296,8 +308,9 @@ CREATE TABLE IF NOT EXISTS tb_transactions(
   bottles int,
   litres numeric(12,2),
   transaction_year varchar(4),
-  transaction_month varchar(2),
-  transaction_date varchar(2),
+  transaction_month varchar(15),
+  transaction_day varchar(2),
+  transaction_code varchar(200) unique,
   jdata jsonb,
   create_time timestamp without time zone default (now() at time zone 'utc'),
   update_time timestamp without time zone default (now() at time zone 'utc')

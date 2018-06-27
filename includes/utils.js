@@ -93,7 +93,7 @@ function gen_result(res, err, http_code, result) {
     var r = gen_result_check(err, http_code, result);
     //console.log('http_code: ' + r.http_code);
     console.log('result: ' + JSON.stringify(r));
-    res.send(r.http_code, r);
+    res.status(http_code).json(r.http_code, r);
 };
 
 exports.gen_result_check = gen_result_check;

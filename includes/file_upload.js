@@ -88,6 +88,7 @@ var store_wine_list = function(pdb, file){
     var proc_name = 'store_wine_list_xlsx';
     pdb.proc(proc_name, worksheet)
     .then(data => {
+      // TODO: email rep with link
       console.log(data)
       resolve(data[proc_name])
     })

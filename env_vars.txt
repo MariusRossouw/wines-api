@@ -24,5 +24,5 @@ node server.js
 
 wcwines
 server :
-wcwines_admin  WITH  password ‘sedos9os’ 
-user wcwines_api  WITH  password ‘zedos9ok’ (edited)
+wcwines_admin  WITH  password sedos9os 
+user wcwines_api  WITH  password zedos9ok (edited)
