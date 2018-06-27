@@ -84,7 +84,7 @@ if (!plv8.ufn){
 		t.transaction_year, \
 		t.transaction_month, \
 		t.sale, \
-		p.volume \
+		t.litres \
 		from tb_transactions t \
 		inner join tb_merchant m on m.merchant_id = t.merchant_id \
 		inner join tb_merchant_group mg on mg.merchant_group_id = m.merchant_group_id \
@@ -109,7 +109,7 @@ if (!plv8.ufn){
 		t.transaction_year, \
 		t.transaction_month, \
 		t.sale, \
-		p.volume \
+		t.litres \
 		from tb_transactions t \
 		inner join tb_merchant m on m.merchant_id = t.merchant_id \
 		inner join tb_merchant_group mg on mg.merchant_group_id = m.merchant_group_id \
