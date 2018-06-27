@@ -3,7 +3,6 @@ log/*
 *.log
 .idea
 pdf_docs/*
-uploads/*
 uploads100/*
 notes_db.js
 .DS_Store
