@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS tb_profile_product_map;
 DROP TABLE IF EXISTS tb_distributor_product_map;
 DROP TABLE IF EXISTS tb_wine_farm_profile_map;
 DROP TABLE IF EXISTS tb_wine_farm_product_map;
+DROP TABLE IF EXISTS tb_profile_type_map;
 DROP TABLE IF EXISTS tb_wine_farm;
 DROP TABLE IF EXISTS tb_product;
 DROP TABLE IF EXISTS tb_product_type;
@@ -17,7 +18,7 @@ DROP TABLE IF EXISTS tb_entity_document_map;
 DROP TABLE IF EXISTS tb_entity_type;
 DROP TABLE IF EXISTS tb_document;
 drop table IF EXISTS tb_profile;
-DROP TABLE IF EXISTS tb_profile_type;
+DROP TABLE IF EXISTS tb_type;
 DROP TABLE IF EXISTS tb_division;
 DROP TABLE IF EXISTS tb_region;
 DROP TABLE IF EXISTS tb_province;
@@ -70,9 +71,9 @@ CREATE TABLE IF NOT EXISTS tb_division(
 );
 
 
-CREATE TABLE IF NOT EXISTS tb_profile_type(
-  profile_type_id serial primary key,
-  profile_type varchar(50) unique,
+CREATE TABLE IF NOT EXISTS tb_type(
+  type_id serial primary key,
+  type varchar(50) unique,
 
   jdata jsonb,
   create_time timestamp without time zone default (now() at time zone 'utc'),
@@ -82,7 +83,6 @@ CREATE TABLE IF NOT EXISTS tb_profile_type(
 
 CREATE TABLE IF NOT EXISTS tb_profile(
   profile_id SERIAL PRIMARY KEY,
-  profile_type_id int references tb_profile_type(profile_type_id),
   province_id INTEGER references tb_province(province_id),
 
   gender varchar(200),
@@ -113,6 +113,16 @@ CREATE TABLE IF NOT EXISTS tb_profile(
   verified_time timestamp without time zone
 );
 
+CREATE TABLE IF NOT EXISTS tb_profile_type_map(
+  profile_type_id serial primary key,
+  type_id int references tb_type(type_id),
+  profile_id int references tb_profile(profile_id),
+
+  jdata jsonb,
+  create_time timestamp without time zone default (now() at time zone 'utc'),
+  update_time timestamp without time zone default (now() at time zone 'utc'),
+  CONSTRAINT u_profile_type UNIQUE (profile_id,type_id)
+);
 
 CREATE TABLE IF NOT EXISTS tb_document(
   document_id serial primary key,
