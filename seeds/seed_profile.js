@@ -7,7 +7,7 @@ $$
   }
 
   var test_profile = [
-		{'profile_type': 1, 'email':'michiel@stratech.co.za', 'first_name':'Michiel', 'last_name':'de Beer', 'name': 'Michiel de Beer', 'password':'admin1234', 'mobile_no_exl':'711231234', 'mobile_country_code': '27','verified': true},
+		{'profile_type': 1, 'email':'michiel@westerncapewines.co.za', 'first_name':'Michiel', 'last_name':'de Beer', 'name': 'Michiel de Beer', 'password':'admin1234', 'mobile_no_exl':'711231234', 'mobile_country_code': '27','verified': true},
     {'profile_type': 1, 'email':'marius@stratech.co.za', 'first_name':'Marius', 'last_name':'Rossouw', 'name': 'Marius Rossouw', 'password':'admin1234', 'mobile_no_exl':'793327238', 'mobile_country_code': '27','verified': true},
     {'profile_type': 1, 'email':'hymnect@gmail.com', 'first_name':'Hymne', 'last_name':'Rossouw', 'name': 'Hymne Rossouw', 'password':'admin1234', 'mobile_no_exl':'636601501', 'mobile_country_code': '27','verified': true}
   ];

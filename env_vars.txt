@@ -2,7 +2,7 @@ export LC_ALL=C
 cd ~/repos/wines-api
 
 export PG_DB_HOST=localhost
-export PG_DB_NAME=wines
+export PG_DB_NAME=wcwines
 export PG_DB_USERNAME=nodejs
 export PG_DB_PASSWORD=glasspen
 export PG_DB_PORT=
