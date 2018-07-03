@@ -77,20 +77,16 @@ if (!plv8.ufn){
   var end = ";";
 
   var s_count = "select  \
-		pr.province_name, \
-		r.region_name, \
-		m.merchant_name, \
-		mg.group_name, \
-		t.transaction_year, \
-		t.transaction_month, \
-		t.sale, \
-		t.litres \
+		count(*) cnt \
 		from tb_transactions t \
 		inner join tb_merchant m on m.merchant_id = t.merchant_id \
 		inner join tb_merchant_group mg on mg.merchant_group_id = m.merchant_group_id \
 		inner join tb_province pr on pr.province_id = m.province_id \
 		inner join tb_region r on r.region_id = m.region_id \
 		inner join tb_product p on p.product_id = t.product_id \
+    inner join tb_wine_farm_product_map wfpm wfpm.product_id = t.product_id \
+    inner join tb_wine_farm wf on wf.wine_farm_id = wfpm.wine_farm_id \
+    inner join tb_profile prof on prof.profile_id = t.profile_id \
 		" + where + end;
 
   var ex1 = [];
@@ -102,6 +98,11 @@ if (!plv8.ufn){
   available_records = sqlres1[0].cnt;
 
   var s_query = " select  \
+    prof.profile_id, \
+    t.product_id, \
+    wf.wine_farm_id, \
+    m.merchant_id, \
+    mg.merchant_group_id, \
 		pr.province_name, \
 		r.region_name, \
 		m.merchant_name, \
@@ -109,13 +110,18 @@ if (!plv8.ufn){
 		t.transaction_year, \
 		t.transaction_month, \
 		t.sale, \
-		t.litres \
+		t.litres, \
+    wf.farm_name, \
+    prof.rep_name \
 		from tb_transactions t \
 		inner join tb_merchant m on m.merchant_id = t.merchant_id \
 		inner join tb_merchant_group mg on mg.merchant_group_id = m.merchant_group_id \
 		inner join tb_province pr on pr.province_id = m.province_id \
 		inner join tb_region r on r.region_id = m.region_id \
 		inner join tb_product p on p.product_id = t.product_id \
+    inner join tb_wine_farm_product_map wfpm on wfpm.product_id = t.product_id \
+    inner join tb_wine_farm wf on wf.wine_farm_id = wfpm.wine_farm_id \
+    inner join tb_profile prof on prof.profile_id = t.profile_id \
 	" + where + limit + offset + end;
 
   var ex2 = [];
