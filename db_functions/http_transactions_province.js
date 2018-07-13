@@ -84,7 +84,7 @@ if (!plv8.ufn){
 		inner join tb_province pr on pr.province_id = m.province_id \
 		inner join tb_region r on r.region_id = m.region_id \
 		inner join tb_product p on p.product_id = t.product_id \
-    inner join tb_wine_farm_product_map wfpm wfpm.product_id = t.product_id \
+    inner join tb_wine_farm_product_map wfpm on wfpm.product_id = t.product_id \
     inner join tb_wine_farm wf on wf.wine_farm_id = wfpm.wine_farm_id \
     inner join tb_profile prof on prof.profile_id = t.profile_id \
 		" + where + end;
