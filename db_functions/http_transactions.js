@@ -32,7 +32,7 @@ if (!plv8.ufn){
   if (http_req.body.offset){
     offset1 = http_req.body.offset;
   };
-  var limit1 = 10;
+  var limit1 = 1000000000;
   if (http_req.body.limit){
     limit1 = http_req.body.limit;
   };

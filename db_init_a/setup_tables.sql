@@ -22,6 +22,9 @@ DROP TABLE IF EXISTS tb_type;
 DROP TABLE IF EXISTS tb_division;
 DROP TABLE IF EXISTS tb_region;
 DROP TABLE IF EXISTS tb_province;
+DROP TABLE IF EXISTS tb_api_doc_sections;
+DROP TABLE IF EXISTS tb_api_docs_endpoint;
+DROP TABLE IF EXISTS tb_api_docs_req_res;
 
 CREATE TABLE IF NOT EXISTS tb_api_log (
   log_id SERIAL PRIMARY KEY,
@@ -34,6 +37,43 @@ CREATE TABLE IF NOT EXISTS tb_api_log (
   response jsonb,
   request jsonb,
   data jsonb,
+  create_time timestamp without time zone default (now() at time zone 'utc'),
+  update_time timestamp without time zone default (now() at time zone 'utc')
+);
+
+CREATE TABLE IF NOT EXISTS tb_api_doc_sections (
+  api_doc_section_id SERIAL PRIMARY KEY,
+
+  sectionName varchar(100),
+  projectName varchar(100),
+  data jsonb,
+  create_time timestamp without time zone default (now() at time zone 'utc'),
+  update_time timestamp without time zone default (now() at time zone 'utc')
+);
+
+CREATE TABLE IF NOT EXISTS tb_api_docs_endpoint (
+  api_doc_endpoint_id SERIAL PRIMARY KEY,
+  api_doc_section_id INTEGER references tb_api_doc_sections(api_doc_section_id),
+
+  subSectionName varchar(100),
+  method varchar(100),
+  endpoint varchar(100),
+  description varchar(100),
+  requirements varchar(100),
+  requiredFields jsonb,
+  reqRes jsonb,
+  create_time timestamp without time zone default (now() at time zone 'utc'),
+  update_time timestamp without time zone default (now() at time zone 'utc')
+);
+
+CREATE TABLE IF NOT EXISTS tb_api_docs_req_res (
+  api_doc_req_res_id SERIAL PRIMARY KEY,
+  api_doc_endpoint_id INTEGER references tb_api_docs_endpoint(api_doc_endpoint_id),
+
+  headers text,
+  resCode int,
+  requestBody jsonb,
+  responseBody jsonb,
   create_time timestamp without time zone default (now() at time zone 'utc'),
   update_time timestamp without time zone default (now() at time zone 'utc')
 );
@@ -317,7 +357,7 @@ CREATE TABLE IF NOT EXISTS tb_transactions(
   cases int,
   bottles int,
   litres numeric(12,2),
-  transaction_year varchar(4),
+  transaction_year varchar(12),
   transaction_month varchar(15),
   transaction_day varchar(2),
   transaction_code varchar(200) unique,
