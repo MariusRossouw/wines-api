@@ -58,21 +58,19 @@ if (!plv8.ufn){
             where = where + "WHERE ";
             count = 0;
             if (filters.years && filters.years.length > 0) {
-                for(var i = 0; i < filters.years.length; i++){
-                    count = count + 1;
-                    if (count > 1) {
-                        where = where + "AND ";
-                    }
-                    where = where + "p.years ~* $" + count.toString() + " ";
-                    ex.push(filters.years);
-                }
-            }
-            if (filters.name && filters.name.length > 0) {
                 count = count + 1;
                 if (count > 1) {
                     where = where + "AND ";
                 }
-                where = where + "p.name ~* $" + count.toString() + " ";
+                where = where + "p.years" in (filters.years) + count.toString() + " ";
+                ex.push(filters.years);
+            }
+            if (filters.quarters && filters.quarters.length > 0) {
+                count = count + 1;
+                if (count > 1) {
+                    where = where + "AND ";
+                }
+                where = where + "p.quarters ~* $" + count.toString() + " ";
                 ex.push(filters.name);
             }
 
