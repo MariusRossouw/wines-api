@@ -22,6 +22,22 @@ if (!plv8.ufn){
     return(result);
   }
 
+
+  // get all info possible for the transaction based on the filters
+// var filters = { 
+//     "years": [ "2015", "2016", "2017" ],
+//     "quarters": [ "Q1", "Q3", "Q2" ],
+//     "months": [ "January", "February", "March" ], 
+//     "codes": [ "C1", "C2", "C3" ], 
+//     "merchant_groups": [ "MG4", "MG3" ], 
+//     "merchants": [ "M2", "M3", "M4" ], 
+//     "wine_farms": [ "WF1", "WF2", "WF3" ], 
+//     "provinces": [ "P2", "P3", "P4" ], 
+//     "products": [ "PR1", "PR2", "PR3" ], 
+//     "types": [ "T1", "T2", "T3" ], 
+//     "reps": [ "R2", "R4" ] 
+// }
+
   var filters = {};
 
   if (http_req.body.filters){
@@ -156,4 +172,3 @@ $$ LANGUAGE plv8;
 
 
 
-// get all info possible for the transaction based on the filters
