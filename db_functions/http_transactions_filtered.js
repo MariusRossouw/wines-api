@@ -23,7 +23,7 @@ if (!plv8.ufn){
   }
 
 
-  // get all info possible for the transaction based on the filters
+// get all info possible for the transaction based on the filters
 // var filters = { 
 //     "years": [ "2015", "2016", "2017" ],
 //     "quarters": [ "Q1", "Q3", "Q2" ],
