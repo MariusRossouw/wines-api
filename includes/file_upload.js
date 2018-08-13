@@ -73,7 +73,7 @@ exports.file_upload_64 = function(req, res) {
 // ===== Wine specfic =====
 
 // store file contents to DB
-var store_wine_list = function(pdb, file){
+var store_contents = function(pdb, file, proc_name){
   return new Promise((resolve,reject)=>{
     try {
       var workbook = xlsx.readFile(file);
@@ -83,9 +83,7 @@ var store_wine_list = function(pdb, file){
       console.log(err);
       reject({http_code: 500, message: 'Failed to read xl file'})
     }
-    console.log(worksheet['A1'].v);
 
-    var proc_name = 'store_wine_list_xlsx';
     pdb.proc(proc_name, worksheet)
     .then(data => {
       // TODO: email rep with link
@@ -100,7 +98,7 @@ var store_wine_list = function(pdb, file){
 }
 
 // store the file on the server
-var store_wine_list_file = function(files){
+var store_file = function(files){
   return new Promise((resolve,reject)=>{
     var file_name = files.file.name;
     var file_path = path.join(__dirname ,'/../','uploads/' , file_name);
@@ -126,7 +124,7 @@ var remove_file = function(path){
   })
 }
 
-exports.upload_wine_list = function(req, res){
+exports.upload_file_store = function(req, res){
   if(!req.files){
     console.log('file not found');
     res.status(500).send({http_code: 500, message: 'file not found'});
@@ -138,11 +136,11 @@ exports.upload_wine_list = function(req, res){
     console.log('Body: ' , req.body);
 
     // store the file on the server
-    store_wine_list_file(req.files)
+    store_file(req.files)
     .then(dataPath => {
       path = dataPath
       // store the file contents in the DB
-      return store_wine_list(req.pdb, dataPath)
+      return store_contents(req.pdb, dataPath, req.body.proc_name)
     })
     .then(data => {
       return_data = data;

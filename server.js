@@ -112,23 +112,28 @@ var files = require('./includes/file_upload.js');
 app.post('/file_upload', files.file_upload);
 app.post('/file_upload_64', files.file_upload_64);
 
-app.post('/uploads/wine_list', files.upload_wine_list);
+app.post('/uploads/wine_list', function(req, res){
+    req.body.proc_name = 'store_wine_list_xlsx';
+    files.upload_file_store(req,res);
+});
+
+app.post('/uploads/budget', function(req, res){
+    req.body.proc_name = 'store_budget_xlsx';
+    files.upload_file_store(req,res);
+});
 
 app.get('/test_split', function(req,res){
-    var str = 'BB Wine White   Chardonnay NV kosher 750 ml (6)';
-    str = str.replace(/   +/g, ' - ');
-    var answer = str.split(/[  ]+/);
-    console.log(answer);
-
-    var msr = '1,5'
-    var vol = parseFloat(msr);
-
-    var date = '2015/07/01 00:00:00';
-    var new_date = moment(date);
-    var day = new_date.format('DD')
+    var rep_name = 'Sean Curtis';
+    var names = rep_name.split(' ');
+    console.log('SPLIT',names)
+    var first_name = names[0];
+    names.splice(0,1);
+    console.log('SPLICE', names)
+    var last_name = names.join(' ');
+    console.log('JOIN',last_name)
 
 
-    res.status(200).send({data: answer, vol: vol, new_date: day})
+    res.status(200).send({})
 
 })
 

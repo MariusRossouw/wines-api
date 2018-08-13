@@ -124,8 +124,8 @@ $$
 
             var names = rep_name.split(' ');
             var first_name = names[0];
-            var last_names = names.splice(0,1);
-            var last_name = last_names.join(' ');
+            names.splice(0,1);
+            var last_name = names.join(' ');
 
             // var email = worksheet['O'+row] ? worksheet['O'+row].v : null;
             var rep_code = worksheet['E'+row] ? worksheet['E'+row].v : null;
@@ -134,6 +134,11 @@ $$
             var p_sqlres = plv8.execute(p_sql, rep_code, rep_name, first_name, last_name);
 
             var profile_id = p_sqlres[0].profile_id;
+
+            // merchant_profile_map
+            var p_sql = "insert into tb_merchant_profile_map (merchant_id, profile_id) values ($1,$2) \
+                ON CONFLICT (merchant_id,profile_id) DO UPDATE SET merchant_id=EXCLUDED.merchant_id RETURNING merchant_profile_id";
+            var p_sqlres = plv8.execute(p_sql, merchant_id, profile_id);
             
             // TRANSACTION
             var t_quantity = worksheet['I'+row] ? worksheet['I'+row].v: null;
@@ -163,9 +168,7 @@ $$
                     transaction_type, \
                     period \
                 ) \
-                values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) \
-                ON CONFLICT (product_id) \
-                DO UPDATE SET product_id=EXCLUDED.product_id RETURNING transaction_id";
+                values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) returning transaction_id";
             var t_sqlres = plv8.execute(t_sql,
                 product_id,
                 merchant_id,

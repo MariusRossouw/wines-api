@@ -1,0 +1,151 @@
+{
+  "filters": {
+    "years": [
+      "2015"
+    ],
+    "quarters": [
+      "Q1",
+      "Q2",
+      "Q3"
+    ],
+    "months": [
+      "April",
+      "March",
+      "February",
+      "January"
+    ],
+    "codes": [
+      "DSTRBR",
+      "SCS"
+    ],
+    "merchant_groups": [
+      {
+        "merchant_group_id": 83,
+        "group_name": "DISTRIBUTORS",
+        "selected": true
+      },
+      {
+        "merchant_group_id": 4,
+        "group_name": "Shop\/Check",
+        "selected": true
+      },
+      {
+        "merchant_group_id": 18,
+        "group_name": "PNP",
+        "selected": true
+      },
+      {
+        "merchant_group_id": 21,
+        "group_name": "PnP",
+        "selected": true
+      }
+    ],
+    "merchants": [
+      {
+        "merchant_id": 83,
+        "merchant_name": "NATAL WINE MERCHANTS",
+        "selected": true
+      },
+      {
+        "merchant_id": 84,
+        "merchant_name": "SAFWASM",
+        "selected": true
+      },
+      {
+        "merchant_id": 3,
+        "merchant_name": "SPAR & TOPS DE DEKKE 35841",
+        "selected": true
+      },
+      {
+        "merchant_id": 4,
+        "merchant_name": "SHOPRITE LIQ OUDTSHOORN 63250",
+        "selected": true
+      }
+    ],
+    "wine_farms": [
+      {
+        "wine_farm_id": 3,
+        "farm_name": "BB",
+        "selected": true
+      }
+    ],
+    "provinces": [
+      {
+        "province_id": 7,
+        "province_name": "Kwazulu Natal",
+        "selected": true
+      },
+      {
+        "province_id": 3,
+        "province_name": "Eastern Cape",
+        "selected": true
+      },
+      {
+        "province_id": 11,
+        "province_name": "Free State",
+        "selected": true
+      },
+      {
+        "province_id": 20,
+        "province_name": "Gauteng",
+        "selected": true
+      }
+    ],
+    "products": [
+      {
+        "product_id": 6,
+        "product_name": "BB Wine Red   DryRed NV   750 ml (12)",
+        "selected": true
+      },
+      {
+        "product_id": 7,
+        "product_name": "BB Wine Red   Shiraz NV   750 ml (6)",
+        "selected": true
+      },
+      {
+        "product_id": 9,
+        "product_name": "BB Wine Red   DryRed NV   1,5 lt (6)",
+        "selected": true
+      },
+      {
+        "product_id": 14,
+        "product_name": "BB Wine Red   Rose NV   750 ml (12)",
+        "selected": true
+      }
+    ],
+    "types": [
+      {
+        "product_type_id": 17,
+        "product_type": "MCC",
+        "selected": true
+      },
+      {
+        "product_type_id": 3,
+        "product_type": "Wine",
+        "selected": true
+      }
+    ],
+    "reps": [
+      {
+        "profile_id": 11,
+        "rep_name": "General (non Rep)",
+        "selected": true
+      },
+      {
+        "profile_id": 3,
+        "rep_name": "Joanie Calitz",
+        "selected": true
+      },
+      {
+        "profile_id": 7,
+        "rep_name": "Nicoli Orchison",
+        "selected": true
+      },
+      {
+        "profile_id": 20,
+        "rep_name": "Ruth de Witt",
+        "selected": true
+      }
+    ]
+  }
+}

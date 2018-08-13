@@ -25,6 +25,7 @@ DROP TABLE IF EXISTS tb_province;
 DROP TABLE IF EXISTS tb_api_doc_sections;
 DROP TABLE IF EXISTS tb_api_docs_endpoint;
 DROP TABLE IF EXISTS tb_api_docs_req_res;
+DROP TABLE IF EXISTS tb_budget;
 
 CREATE TABLE IF NOT EXISTS tb_api_log (
   log_id SERIAL PRIMARY KEY,
@@ -374,4 +375,17 @@ CREATE TABLE IF NOT EXISTS tb_transactions(
   jdata jsonb,
   create_time timestamp without time zone default (now() at time zone 'utc'),
   update_time timestamp without time zone default (now() at time zone 'utc')
+);
+
+CREATE TABLE IF NOT EXISTS tb_budget(
+  budget_id serial primary key,
+  merchant_id int references tb_merchant(merchant_id) not null,
+
+  budget_month varchar(20),
+  budget_amount numeric(12,2),
+  budget_period varchar(20),
+
+  create_time timestamp without time zone default (now() at time zone 'utc'),
+
+  CONSTRAINT u_merchant_budget UNIQUE (merchant_id,budget_month)
 );
