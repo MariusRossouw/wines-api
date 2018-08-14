@@ -122,21 +122,6 @@ app.post('/uploads/budget', function(req, res){
     files.upload_file_store(req,res);
 });
 
-app.get('/test_split', function(req,res){
-    var rep_name = 'Sean Curtis';
-    var names = rep_name.split(' ');
-    console.log('SPLIT',names)
-    var first_name = names[0];
-    names.splice(0,1);
-    console.log('SPLICE', names)
-    var last_name = names.join(' ');
-    console.log('JOIN',last_name)
-
-
-    res.status(200).send({})
-
-})
-
 //API Methods: Lists
 
 app.post('/*', function(req, res){ utils.pg_http_gen_new(req, res, '_'); });

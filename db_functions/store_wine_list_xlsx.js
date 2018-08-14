@@ -42,9 +42,9 @@ $$
     		var product_type_id = pt_sqlres[0].product_type_id;
 
             // PRODUCT
-    		var item_code = worksheet['G'+row] ? worksheet['G'+row].v : null;
-    		var description = worksheet['H'+row] ? worksheet['H'+row].v : null;
-            var product_classification = worksheet['X'+row] ? worksheet['X'+row].v : null;
+    		var item_code = worksheet['G'+row] ? worksheet['G'+row].v : 'Other';
+    		var description = worksheet['H'+row] ? worksheet['H'+row].v : 'Other';
+            var product_classification = worksheet['X'+row] ? worksheet['X'+row].v : 'Other';
             var color = str_arr[2];
             var product_name = str_arr[3];
             var cultivar = str_arr[4];
@@ -71,7 +71,7 @@ $$
     		var pt_sqlres = plv8.execute(pt_sql, wine_farm_id, product_id);
 
             // PROVINCE
-            var province_name = worksheet['R'+row] ? worksheet['R'+row].v : null;
+            var province_name = worksheet['R'+row] ? worksheet['R'+row].v : 'Other';
             var pr_sql = "insert into tb_province (province_name) values ($1) \
                 ON CONFLICT (province_name) DO UPDATE SET province_name=EXCLUDED.province_name RETURNING province_id";
             var pr_sqlres = plv8.execute(pr_sql, province_name);
@@ -87,7 +87,7 @@ $$
             // var division_id = d_sqlres[0].division_id;
             
             // REGION
-            var region_name = worksheet['S'+row] ? worksheet['S'+row].v : null;
+            var region_name = worksheet['S'+row] ? worksheet['S'+row].v : 'Other';
             var r_sql = "insert into tb_region (region_name, province_id) values ($1,$2) \
                 ON CONFLICT (region_name) DO UPDATE SET region_name=EXCLUDED.region_name RETURNING region_id";
             var r_sqlres = plv8.execute(r_sql, province_name, province_id);
@@ -95,7 +95,7 @@ $$
             var region_id = r_sqlres[0].region_id;
             
             // MERCHANT GROUP
-            var group_name = worksheet['T'+row] ? worksheet['T'+row].v : null;
+            var group_name = worksheet['T'+row] ? worksheet['T'+row].v : 'Other';
             var g_sql = "insert into tb_merchant_group (group_name) values ($1) \
                 ON CONFLICT (group_name) DO UPDATE SET group_name=EXCLUDED.group_name RETURNING merchant_group_id";
             var g_sqlres = plv8.execute(g_sql, group_name);
@@ -103,9 +103,9 @@ $$
             var merchant_group_id = g_sqlres[0].merchant_group_id;
             
             // MERCHANT
-            var merchant_name = worksheet['D'+row] ? worksheet['D'+row].v : null;
-            var code = worksheet['A'+row] ? worksheet['A'+row].v : null;;
-            var account = worksheet['C'+row] ? worksheet['C'+row].v : null;
+            var merchant_name = worksheet['D'+row] ? worksheet['D'+row].v : 'Other';
+            var code = worksheet['A'+row] ? worksheet['A'+row].v : 'Other';;
+            var account = worksheet['C'+row] ? worksheet['C'+row].v : 'Other';
 
             var m_sql = "insert into tb_merchant (merchant_name,province_id,region_id,merchant_group_id,code,account) \
                 values ($1,$2,$3,$4,$5,$6) \
@@ -120,7 +120,7 @@ $$
             // profile_jdata.email_token = plv8.ufn.generateUUID();
             profile_jdata.email_token = '1234';
 
-            var rep_name = worksheet['F'+row] ? worksheet['F'+row].v : null;
+            var rep_name = worksheet['F'+row] ? worksheet['F'+row].v : 'Other';
 
             var names = rep_name.split(' ');
             var first_name = names[0];
@@ -128,7 +128,7 @@ $$
             var last_name = names.join(' ');
 
             // var email = worksheet['O'+row] ? worksheet['O'+row].v : null;
-            var rep_code = worksheet['E'+row] ? worksheet['E'+row].v : null;
+            var rep_code = worksheet['E'+row] ? worksheet['E'+row].v : 'Other';
             var p_sql = "insert into tb_profile (rep_code,rep_name, first_name, last_name) values ($1,$2,$3,$4) \
                 ON CONFLICT (rep_code) DO UPDATE SET rep_code=EXCLUDED.rep_code RETURNING profile_id";
             var p_sqlres = plv8.execute(p_sql, rep_code, rep_name, first_name, last_name);
@@ -141,15 +141,15 @@ $$
             var p_sqlres = plv8.execute(p_sql, merchant_id, profile_id);
             
             // TRANSACTION
-            var t_quantity = worksheet['I'+row] ? worksheet['I'+row].v: null;
-            var t_sale = worksheet['K'+row] ? worksheet['K'+row].v: null;
+            var t_quantity = worksheet['I'+row] ? worksheet['I'+row].v: 0;
+            var t_sale = worksheet['K'+row] ? worksheet['K'+row].v: 0;
             var t_transaction_day = moment(worksheet['L'+row] ? worksheet['L'+row].v: null).format('DD');
-            var t_type = worksheet['M'+row] ? worksheet['M'+row].v: null;
+            var t_type = worksheet['M'+row] ? worksheet['M'+row].v: 'Other';
             var t_transaction_month = worksheet['N'+row] ? worksheet['N'+row].v: null;
             var t_transaction_year = worksheet['O'+row] ? worksheet['O'+row].v: null;
-            var t_cases = worksheet['U'+row] ? worksheet['U'+row].v: null;
-            var t_bottles = worksheet['V'+row] ? worksheet['V'+row].v: null;
-            var t_litres = worksheet['W'+row] ? worksheet['W'+row].v: null;
+            var t_cases = worksheet['U'+row] ? worksheet['U'+row].v: 0;
+            var t_bottles = worksheet['V'+row] ? worksheet['V'+row].v: 0;
+            var t_litres = worksheet['W'+row] ? worksheet['W'+row].v: 0;
             
             // var t_code = worksheet['X'+row] ? worksheet['X'+row].v : null;
             var period = worksheet['AB'+row] ? worksheet['AB'+row].v : null;
