@@ -2,6 +2,7 @@
 
 drop table if exists tb_api_log;
 DROP TABLE IF EXISTS tb_transactions;
+DROP TABLE IF EXISTS tb_budget;
 DROP TABLE IF EXISTS tb_merchant_profile_map;
 DROP TABLE IF EXISTS tb_profile_product_map;
 DROP TABLE IF EXISTS tb_distributor_product_map;
@@ -22,10 +23,9 @@ DROP TABLE IF EXISTS tb_type;
 DROP TABLE IF EXISTS tb_division;
 DROP TABLE IF EXISTS tb_region;
 DROP TABLE IF EXISTS tb_province;
-DROP TABLE IF EXISTS tb_api_doc_sections;
-DROP TABLE IF EXISTS tb_api_docs_endpoint;
 DROP TABLE IF EXISTS tb_api_docs_req_res;
-DROP TABLE IF EXISTS tb_budget;
+DROP TABLE IF EXISTS tb_api_docs_endpoint;
+DROP TABLE IF EXISTS tb_api_doc_sections;
 
 CREATE TABLE IF NOT EXISTS tb_api_log (
   log_id SERIAL PRIMARY KEY,
@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS tb_province(
   province_id SERIAL PRIMARY KEY,
 
   abrv VARCHAR(5),
-  province_name VARCHAR(20) unique,
+  province_name VARCHAR(20) unique default 'Other',
   jdata jsonb,
   create_time timestamp without time zone default (now() at time zone 'utc'),
   update_time timestamp without time zone default (now() at time zone 'utc')
@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS tb_region(
   province_id INTEGER references tb_province(province_id),
 
   abrv VARCHAR(5),
-  region_name VARCHAR(20) unique,
+  region_name VARCHAR(20) unique default 'Other',
   jdata jsonb,
   create_time timestamp without time zone default (now() at time zone 'utc'),
   update_time timestamp without time zone default (now() at time zone 'utc')
@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS tb_division(
   division_id SERIAL PRIMARY KEY,
 
   abrv VARCHAR(5),
-  division_name VARCHAR(20) unique,
+  division_name VARCHAR(20) unique default 'Other',
   jdata jsonb,
   create_time timestamp without time zone default (now() at time zone 'utc'),
   update_time timestamp without time zone default (now() at time zone 'utc')
@@ -199,7 +199,7 @@ CREATE TABLE IF NOT EXISTS tb_entity_document_map(
 
 CREATE TABLE IF NOT EXISTS tb_merchant_group(
   merchant_group_id serial primary key,
-  group_name varchar(200) unique,
+  group_name varchar(200) unique default 'Other',
 
   jdata jsonb,
   create_time timestamp without time zone default (now() at time zone 'utc'),
@@ -255,7 +255,7 @@ CREATE TABLE IF NOT EXISTS tb_product_type(
   product_type_id SERIAL PRIMARY KEY,
 
   abrv VARCHAR(5),
-  product_type VARCHAR(20) UNIQUE,
+  product_type VARCHAR(20) UNIQUE default 'Other',
   jdata jsonb,
   create_time timestamp without time zone default (now() at time zone 'utc'),
   update_time timestamp without time zone default (now() at time zone 'utc')
