@@ -65,7 +65,7 @@ $$
                     var sql_req4 = `select gl_code from tb_givengain_campaign_to_gl_code where campaign_id = $1;`;
                     var sql_res4 = plv8.execute(sql_req4, campaign_id);
 
-                    if(sql_res4.length == 0){
+                    if(sql_res4.length > 0){
                         gl_code = sql_res4[0].gl_code;
                         var payment_type = 'Givengain';
                         var paid = true;
@@ -84,6 +84,7 @@ $$
                         var sql_res6 = plv8.execute(sql_req6, processing_gl_code, payment_type, paid, processing_fee, description, profile_id);
                     } else {
                         // Error message that there id an unrecognised Campaign ID
+                        
                     }
 
 
