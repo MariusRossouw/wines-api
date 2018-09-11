@@ -191,6 +191,8 @@ if(http_req.body.filters.reps){
     sale = [];
     budget_accum = [];
     sale_accum = [];
+    sale_accum_sum = 0;
+    budget_accum_sum = 0;
     for(var b = 0; b < graph_months.length; b++){
 
       var s = `select round(coalesce(sum(b.budget_amount),0),2) budget_total
@@ -244,7 +246,6 @@ if(http_req.body.filters.reps){
         ) `;
       }
       s += budget_where;
-      result.data.budget = s;
       var budget_total = plv8.execute(s,graph_months[b], years[a])[0].budget_total;
 
       budget.push(budget_total);
@@ -292,15 +293,10 @@ if(http_req.body.filters.reps){
         transaction_where += ` and t.profile_id in(`+reps_str+`) `;
       }
       s += transaction_where;
-      result.data.sale = s;
       var sale_total = plv8.execute(s,graph_months[b], years[a])[0].sale_total;
 
       sale.push(sale_total);
-      if(sale_total > 0){
-        sale_accum_sum += (sale_total);
-      }else{
-        sale_total = 0;
-      }
+      sale_accum_sum += (sale_total);
       sale_accum.push(Math.round(sale_accum_sum*100)/100);
 
       temp_str += `'`+graph_months[b]+`',`;

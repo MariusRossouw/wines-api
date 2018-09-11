@@ -190,14 +190,19 @@ if(http_req.body.filters.reps){
 
 
 // ****************** budget and sale ******************
+ var years_filter = ``;
+  var temp_years = ``;
   for(var a = 0; a < years.length; a++){
-        for(var b = 0; b < graph_months.length; b++){
+    for(var b = 0; b < graph_months.length; b++){
       temp_str += `'`+graph_months[b]+`',`;
     }
-    product_type_filter_month = temp_str.substr(0, (temp_str.length-1));
 
-    product_type_filter += ` and ( t.transaction_year = '`+years[a]+`' and t.transaction_month in (`+product_type_filter_month+`) ) `;
+    product_type_filter_month = temp_str.substr(0, (temp_str.length-1));
+    temp_years += `'`+years[a] + `',`;
   };
+  years_filter = temp_years.substr(0, (temp_years.length-1));
+  product_type_filter += ` and ( t.transaction_year in( `+years_filter+` ) and t.transaction_month in (`+product_type_filter_month+`) ) `;
+
 // ****************** bottom5 merchants ******************
   var sql = `select * 
     from tb_transactions t
