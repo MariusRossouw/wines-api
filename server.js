@@ -122,10 +122,35 @@ app.post('/uploads/budget', function(req, res){
     files.upload_file_store(req,res);
 });
 
+var gen_stored_procedure = function(req, res){
+    var endpoint = req.params[0];
+    var sf = 'http_' + endpoint;
+    console.log('=============== ' + sf + ' ===============');
+    var payload = utils.create_req_object(req);
+    utils.pdb_proc(req.pdb, sf, payload, function(err, data) {
+        if(err){
+            console.error(err);
+            res.status(403);
+            res.send({err_message: 'DB Error'});
+            return;
+        };
+        var result = data[sf];
+        console.log(JSON.stringify(result,null,2));
+        var http_code = 200;
+        if(result.http_code){
+            http_code = result.http_code
+        } 
+        res.status(http_code);
+        res.send(result);
+    });
+};
+
 //API Methods: Lists
 
-app.post('/*', function(req, res){ utils.pg_http_gen_new(req, res, '_'); });
-app.get('/*', function(req, res){ utils.pg_http_gen_new(req, res, '_'); });
+app.post('/*', gen_stored_procedure);
+
+// app.post('/*', function(req, res){ utils.pg_http_gen_new(req, res, '_'); });
+// app.get('/*', function(req, res){ utils.pg_http_gen_new(req, res, '_'); });
 
 // ============== Start listening ===========================
 

@@ -74,21 +74,21 @@ $$
         var is_enabled = sql_res2.length > 0 ? sql_res2[0].is_active : false;
 
         if(selected){
-        if(!t_id){
-            var i_sql = `insert into tb_manager_rep_map 
-            (manager_id,rep_id,is_active)
-            values
-            ($1,$2,$3);`;
-            var i_sqlres = plv8.execute(i_sql,sql_res[0].id,rep.rep_id,true);
-        }else if(!is_active){
-            var i_sql = `update tb_manager_rep_map set is_active = $1 where t_id = $2;`;
-            var i_sqlres = plv8.execute(i_sql,true,t_id);
-        }
+            if(!t_id){
+                var i_sql = `insert into tb_manager_rep_map 
+                (manager_id,rep_id,is_active)
+                values
+                ($1,$2,$3);`;
+                var i_sqlres = plv8.execute(i_sql,sql_res[0].id,rep.rep_id,true);
+            }else if(!is_active){
+                var i_sql = `update tb_manager_rep_map set is_active = $1 where t_id = $2;`;
+                var i_sqlres = plv8.execute(i_sql,true,t_id);
+            }
         }else{
-        if(t_id && is_active){
-            var i_sql = `update tb_manager_rep_map set is_active = $1 where t_id = $2;`;
-            var i_sqlres = plv8.execute(i_sql,false,t_id);
-        }
+            if(t_id && is_active){
+                var i_sql = `update tb_manager_rep_map set is_active = $1 where t_id = $2;`;
+                var i_sqlres = plv8.execute(i_sql,false,t_id);
+            }
         }
     }
 

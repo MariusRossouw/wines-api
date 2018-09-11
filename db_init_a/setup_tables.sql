@@ -18,6 +18,7 @@ DROP TABLE IF EXISTS tb_merchant_group;
 DROP TABLE IF EXISTS tb_entity_document_map;
 DROP TABLE IF EXISTS tb_entity_type;
 DROP TABLE IF EXISTS tb_document;
+DROP TABLE IF EXISTS tb_manager_rep_map;
 drop table IF EXISTS tb_profile;
 DROP TABLE IF EXISTS tb_type;
 DROP TABLE IF EXISTS tb_division;
@@ -150,9 +151,11 @@ CREATE TABLE IF NOT EXISTS tb_profile(
   rep_name varchar(50), 
   create_time timestamp without time zone default (now() at time zone 'utc'),
   update_time timestamp without time zone default (now() at time zone 'utc'),
-  verified BOOLEAN DEFAULT FALSE,
+  verified BOOLEAN DEFAULT true,
   verified_time timestamp without time zone
 );
+
+ALTER TABLE tb_profile ADD COLUMN type character varying(10) DEFAULT 'Rep';
 
 CREATE TABLE IF NOT EXISTS tb_profile_type_map(
   profile_type_id serial primary key,
@@ -163,6 +166,18 @@ CREATE TABLE IF NOT EXISTS tb_profile_type_map(
   create_time timestamp without time zone default (now() at time zone 'utc'),
   update_time timestamp without time zone default (now() at time zone 'utc'),
   CONSTRAINT u_profile_type UNIQUE (profile_id,type_id)
+);
+
+CREATE TABLE IF NOT EXISTS tb_manager_rep_map(
+  manager_rep_id serial primary key,
+  manager_id int references tb_profile(profile_id),
+  rep_id int references tb_profile(profile_id),
+
+  is_active boolean default true,
+  jdata jsonb,
+  create_time timestamp without time zone default (now() at time zone 'utc'),
+  update_time timestamp without time zone default (now() at time zone 'utc'),
+  CONSTRAINT u_manager_rep UNIQUE (manager_id,rep_id)
 );
 
 CREATE TABLE IF NOT EXISTS tb_document(

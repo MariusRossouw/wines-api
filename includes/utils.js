@@ -30,6 +30,7 @@ function pdb_proc(pdb, name, values, callback) {
     });
 };
 
+exports.create_req_object = create_req_object;
 function create_req_object(req){
     var req_obj = {};
 
