@@ -5,7 +5,8 @@ $$
 	  sup();
 	}
 
-	var result = {http_code: 200, message: 'Wine list data stored', data: {
+	var result = {
+        http_code: 200, message: 'Wine list data stored', data: {
         last_names: []
     }}
 
@@ -79,7 +80,7 @@ $$
                     names.splice(0,1);
                     var last_name = names.join(' ');
 
-                    result.data.last_names.push(last_names)
+                    result.data.last_names.push(last_name)
 
                     // var email = worksheet['O'+row] ? worksheet['O'+row].v : null;
                     var rep_code = worksheet['E'+row] ? worksheet['E'+row].v : 'Other';

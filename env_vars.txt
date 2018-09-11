@@ -14,8 +14,8 @@ node server.js
 #Staging server
 export PG_DB_HOST=stage-demo.ct7a6pihvwll.eu-west-1.rds.amazonaws.com
 export PG_DB_NAME=wcwines
-export PG_DB_USERNAME=wcwines_api
-export PG_DB_PASSWORD=zedos9ok
+export PG_DB_USERNAME=wcwines_admin
+export PG_DB_PASSWORD=sedos9os
 export PG_DB_PORT=
 # App Port
 export NODE_SERVER_PORT=31001

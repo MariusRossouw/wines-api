@@ -29,7 +29,30 @@ $$
 
     		var wf_sql = "insert into tb_wine_farm (farm_name, jdata) values ($1,$2) \
     			ON CONFLICT (farm_name) DO UPDATE SET farm_name=EXCLUDED.farm_name RETURNING wine_farm_id;";
-    		var wf_sqlres = plv8.execute(wf_sql, farm_name, jdata);
+    		try{
+                var wf_sqlres = plv8.execute(wf_sql, farm_name, jdata);
+            }catch(err){
+                result.http_code = '403';
+                result.data = {
+                    row: row,
+                    farm_name: farm_name,
+                    jdata: jdata,
+                    arr_split: {
+                        items: str_arr,
+                        farm_name: str_arr[0],
+                        product_type: str_arr[1],
+                        color: str_arr[2],
+                        product_name: str_arr[3],
+                        cultivar: str_arr[4],
+                        vintage: str_arr[5],
+                        special: str_arr[6],
+                        size: str_arr[7],
+                        measurement: str_arr[8],
+                        case_size: str_arr[9]
+                    }
+                };
+                return result;
+            }
 
     		var wine_farm_id = wf_sqlres[0].wine_farm_id;
 
@@ -37,7 +60,30 @@ $$
     		var product_type = str_arr[1];
     		var pt_sql = "insert into tb_product_type (product_type,jdata) values ($1,$2) \
     			ON CONFLICT (product_type) DO UPDATE SET product_type=EXCLUDED.product_type RETURNING product_type_id";
-    		var pt_sqlres = plv8.execute(pt_sql, product_type, jdata);
+    		try{
+                var pt_sqlres = plv8.execute(pt_sql, product_type, jdata);
+            }catch(err){
+                result.http_code = '403';
+                result.data = {
+                    row: row,
+                    product_type: product_type,
+                    jdata: jdata,
+                    arr_split: {
+                        items: str_arr,
+                        farm_name: str_arr[0],
+                        product_type: str_arr[1],
+                        color: str_arr[2],
+                        product_name: str_arr[3],
+                        cultivar: str_arr[4],
+                        vintage: str_arr[5],
+                        special: str_arr[6],
+                        size: str_arr[7],
+                        measurement: str_arr[8],
+                        case_size: str_arr[9]
+                    }
+                };
+                return result;
+            }
 
     		var product_type_id = pt_sqlres[0].product_type_id;
 
@@ -56,25 +102,127 @@ $$
             var size_numeric = size.replace(size, ',', '.');
             var volume = measurement == 'lt' ? (parseFloat(size_numeric)*1000) : size;
 
-            var case_size = str_arr[9].replace('(','').replace(')','');
+            try{
+                var case_size = str_arr[9].replace('(','').replace(')','');
+            }catch(err){
+                result.http_code = '403';
+                result.data = {
+                    row: row,
+                    arr_split: {
+                        items: str_arr,
+                        farm_name: str_arr[0],
+                        product_type: str_arr[1],
+                        color: str_arr[2],
+                        product_name: str_arr[3],
+                        cultivar: str_arr[4],
+                        vintage: str_arr[5],
+                        special: str_arr[6],
+                        size: str_arr[7],
+                        measurement: str_arr[8],
+                        case_size: str_arr[9]
+                    }
+                };
+                return result;
+            }
 
     		var p_sql = "insert into tb_product (product_type_id,item_code,description,size,product_name,vintage,jdata,color,cultivar,special,measurement,volume,case_size,product_classification) \
     			values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) \
     			ON CONFLICT (item_code) DO UPDATE SET item_code=EXCLUDED.item_code RETURNING product_id";
-    		var p_sqlres = plv8.execute(p_sql,product_type_id,item_code,description,size,product_name,vintage,jdata,color,cultivar,special,measurement,volume,case_size,product_classification);
+    		try{
+                var p_sqlres = plv8.execute(p_sql,product_type_id,item_code,description,size,product_name,vintage,jdata,color,cultivar,special,measurement,volume,case_size,product_classification);
+            }catch(err){
+                result.http_code = '403';
+                result.err_message = err;
+                result.data = {
+                    row: row,
+                    product_type_id: product_type_id,
+                    item_code: item_code,
+                    description: description,
+                    size: size,
+                    product_name: product_name,
+                    vintage: vintage,
+                    jdata: jdata,
+                    color: color,
+                    cultivar: cultivar,
+                    special: special,
+                    measurement: measurement,
+                    volume: volume,
+                    case_size: case_size,
+                    product_classification: product_classification,
+                    arr_split: {
+                        items: str_arr,
+                        farm_name: str_arr[0],
+                        product_type: str_arr[1],
+                        color: str_arr[2],
+                        product_name: str_arr[3],
+                        cultivar: str_arr[4],
+                        vintage: str_arr[5],
+                        special: str_arr[6],
+                        size: str_arr[7],
+                        measurement: str_arr[8],
+                        case_size: str_arr[9]
+                    }
+                };
+                return result;
+            }
 
     		var product_id = p_sqlres[0].product_id;
 
             // PRODUCT/FARM MAP
     		var pt_sql = "insert into tb_wine_farm_product_map (wine_farm_id,product_id) values ($1,$2) \
     			ON CONFLICT (wine_farm_id,product_id) DO UPDATE SET wine_farm_id=EXCLUDED.wine_farm_id RETURNING wine_farm_product_id";
-    		var pt_sqlres = plv8.execute(pt_sql, wine_farm_id, product_id);
+    		try{
+                var pt_sqlres = plv8.execute(pt_sql, wine_farm_id, product_id);
+            }catch(err){
+                result.http_code = '403';
+                result.data = {
+                    row: row,
+                    wine_farm_id: wine_farm_id,
+                    product_id: product_id,
+                    arr_split: {
+                        items: str_arr,
+                        farm_name: str_arr[0],
+                        product_type: str_arr[1],
+                        color: str_arr[2],
+                        product_name: str_arr[3],
+                        cultivar: str_arr[4],
+                        vintage: str_arr[5],
+                        special: str_arr[6],
+                        size: str_arr[7],
+                        measurement: str_arr[8],
+                        case_size: str_arr[9]
+                    }
+                };
+                return result;
+            }
 
             // PROVINCE
             var province_name = worksheet['R'+row] ? worksheet['R'+row].v : 'Other';
             var pr_sql = "insert into tb_province (province_name) values ($1) \
                 ON CONFLICT (province_name) DO UPDATE SET province_name=EXCLUDED.province_name RETURNING province_id";
-            var pr_sqlres = plv8.execute(pr_sql, province_name);
+            try{
+                var pr_sqlres = plv8.execute(pr_sql, province_name);
+            }catch(err){
+                result.http_code = '403';
+                result.data = {
+                    row: row,
+                    province_name: province_name,
+                    arr_split: {
+                        items: str_arr,
+                        farm_name: str_arr[0],
+                        product_type: str_arr[1],
+                        color: str_arr[2],
+                        product_name: str_arr[3],
+                        cultivar: str_arr[4],
+                        vintage: str_arr[5],
+                        special: str_arr[6],
+                        size: str_arr[7],
+                        measurement: str_arr[8],
+                        case_size: str_arr[9]
+                    }
+                };
+                return result;
+            }
 
             var province_id = pr_sqlres[0].province_id;
 
@@ -90,7 +238,30 @@ $$
             var region_name = worksheet['S'+row] ? worksheet['S'+row].v : 'Other';
             var r_sql = "insert into tb_region (region_name, province_id) values ($1,$2) \
                 ON CONFLICT (region_name) DO UPDATE SET region_name=EXCLUDED.region_name RETURNING region_id";
-            var r_sqlres = plv8.execute(r_sql, province_name, province_id);
+            try{
+                var r_sqlres = plv8.execute(r_sql, province_name, province_id);
+            }catch(err){
+                result.http_code = '403';
+                result.data = {
+                    row: row,
+                    province_name: province_name,
+                    province_id: province_id,
+                    arr_split: {
+                        items: str_arr,
+                        farm_name: str_arr[0],
+                        product_type: str_arr[1],
+                        color: str_arr[2],
+                        product_name: str_arr[3],
+                        cultivar: str_arr[4],
+                        vintage: str_arr[5],
+                        special: str_arr[6],
+                        size: str_arr[7],
+                        measurement: str_arr[8],
+                        case_size: str_arr[9]
+                    }
+                };
+                return result;
+            }
 
             var region_id = r_sqlres[0].region_id;
             
@@ -98,7 +269,29 @@ $$
             var group_name = worksheet['T'+row] ? worksheet['T'+row].v : 'Other';
             var g_sql = "insert into tb_merchant_group (group_name) values ($1) \
                 ON CONFLICT (group_name) DO UPDATE SET group_name=EXCLUDED.group_name RETURNING merchant_group_id";
-            var g_sqlres = plv8.execute(g_sql, group_name);
+            try{
+                var g_sqlres = plv8.execute(g_sql, group_name);
+            }catch(err){
+                result.http_code = '403';
+                result.data = {
+                    row: row,
+                    group_name: group_name,
+                    arr_split: {
+                        items: str_arr,
+                        farm_name: str_arr[0],
+                        product_type: str_arr[1],
+                        color: str_arr[2],
+                        product_name: str_arr[3],
+                        cultivar: str_arr[4],
+                        vintage: str_arr[5],
+                        special: str_arr[6],
+                        size: str_arr[7],
+                        measurement: str_arr[8],
+                        case_size: str_arr[9]
+                    }
+                };
+                return result;
+            }
 
             var merchant_group_id = g_sqlres[0].merchant_group_id;
             
@@ -111,7 +304,34 @@ $$
                 values ($1,$2,$3,$4,$5,$6) \
                 ON CONFLICT (merchant_name) \
                 DO UPDATE SET merchant_name=EXCLUDED.merchant_name RETURNING merchant_id";
-            var m_sqlres = plv8.execute(m_sql, merchant_name, province_id, region_id, merchant_group_id,code,account);
+            try{
+                var m_sqlres = plv8.execute(m_sql, merchant_name, province_id, region_id, merchant_group_id,code,account);
+            }catch(err){
+                result.http_code = '403';
+                result.data = {
+                    row: row,
+                    merchant_name: merchant_name,
+                    province_id: province_id,
+                    region_id: region_id,
+                    merchant_group_id: merchant_group_id,
+                    code: code,
+                    account: account,
+                    arr_split: {
+                        items: str_arr,
+                        farm_name: str_arr[0],
+                        product_type: str_arr[1],
+                        color: str_arr[2],
+                        product_name: str_arr[3],
+                        cultivar: str_arr[4],
+                        vintage: str_arr[5],
+                        special: str_arr[6],
+                        size: str_arr[7],
+                        measurement: str_arr[8],
+                        case_size: str_arr[9]
+                    }
+                };
+                return result;
+            }
 
             var merchant_id = m_sqlres[0].merchant_id;
             
@@ -131,14 +351,62 @@ $$
             var rep_code = worksheet['E'+row] ? worksheet['E'+row].v : 'Other';
             var p_sql = "insert into tb_profile (rep_code,rep_name, first_name, last_name) values ($1,$2,$3,$4) \
                 ON CONFLICT (rep_code) DO UPDATE SET rep_code=EXCLUDED.rep_code RETURNING profile_id";
-            var p_sqlres = plv8.execute(p_sql, rep_code, rep_name, first_name, last_name);
+            try{
+                var p_sqlres = plv8.execute(p_sql, rep_code, rep_name, first_name, last_name);
+            }catch(err){
+                result.http_code = '403';
+                result.data = {
+                    row: row,
+                    rep_name: rep_name,
+                    rep_code: rep_code,
+                    first_name: first_name,
+                    last_name: last_name,
+                    arr_split: {
+                        items: str_arr,
+                        farm_name: str_arr[0],
+                        product_type: str_arr[1],
+                        color: str_arr[2],
+                        product_name: str_arr[3],
+                        cultivar: str_arr[4],
+                        vintage: str_arr[5],
+                        special: str_arr[6],
+                        size: str_arr[7],
+                        measurement: str_arr[8],
+                        case_size: str_arr[9]
+                    }
+                };
+                return result;
+            }
 
             var profile_id = p_sqlres[0].profile_id;
 
             // merchant_profile_map
             var p_sql = "insert into tb_merchant_profile_map (merchant_id, profile_id) values ($1,$2) \
                 ON CONFLICT (merchant_id,profile_id) DO UPDATE SET merchant_id=EXCLUDED.merchant_id RETURNING merchant_profile_id";
-            var p_sqlres = plv8.execute(p_sql, merchant_id, profile_id);
+            try{
+                var p_sqlres = plv8.execute(p_sql, merchant_id, profile_id);
+            }catch(err){
+                result.http_code = '403';
+                result.data = {
+                    row: row,
+                    merchant_id: merchant_id,
+                    profile_id: profile_id,
+                    arr_split: {
+                        items: str_arr,
+                        farm_name: str_arr[0],
+                        product_type: str_arr[1],
+                        color: str_arr[2],
+                        product_name: str_arr[3],
+                        cultivar: str_arr[4],
+                        vintage: str_arr[5],
+                        special: str_arr[6],
+                        size: str_arr[7],
+                        measurement: str_arr[8],
+                        case_size: str_arr[9]
+                    }
+                };
+                return result;
+            }
             
             // TRANSACTION
             var t_quantity = worksheet['I'+row] ? worksheet['I'+row].v: 0;
@@ -169,7 +437,8 @@ $$
                     period \
                 ) \
                 values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) returning transaction_id";
-            var t_sqlres = plv8.execute(t_sql,
+            try{
+                var t_sqlres = plv8.execute(t_sql,
                 product_id,
                 merchant_id,
                 profile_id,
@@ -183,6 +452,38 @@ $$
                 t_type,
                 period
             );
+            }catch(err){
+                result.http_code = '403';
+                result.data = {
+                    row: row,
+                    product_id: product_id,
+                    merchant_id: merchant_id,
+                    profile_id: profile_id,
+                    t_sale: t_sale,
+                    t_cases: t_cases,
+                    t_bottles: t_bottles,
+                    t_litres: t_litres,
+                    t_transaction_year: t_transaction_year,
+                    t_transaction_month: t_transaction_month,
+                    t_transaction_day: t_transaction_day,
+                    t_type: t_type,
+                    period: period,
+                    arr_split: {
+                        items: str_arr,
+                        farm_name: str_arr[0],
+                        product_type: str_arr[1],
+                        color: str_arr[2],
+                        product_name: str_arr[3],
+                        cultivar: str_arr[4],
+                        vintage: str_arr[5],
+                        special: str_arr[6],
+                        size: str_arr[7],
+                        measurement: str_arr[8],
+                        case_size: str_arr[9]
+                    }
+                };
+                return result;
+            }
 
             var transaction_id = t_sqlres[0].transaction_id;
     	}

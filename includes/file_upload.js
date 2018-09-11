@@ -87,12 +87,12 @@ var store_contents = function(pdb, file, proc_name){
     pdb.proc(proc_name, worksheet)
     .then(data => {
       // TODO: email rep with link
-      console.log(data)
+      // console.log(data)
       resolve(data[proc_name])
     })
     .catch(err => {
       console.log('PROC ERR: ',err)
-      reject({http_code: 500, message: 'Failed to store wine list'})
+      reject({http_code: 500, message: 'Failed to store file'})
     })
   });
 }
@@ -132,7 +132,7 @@ exports.upload_file_store = function(req, res){
     var return_data = {};
     var path = '';
 
-    console.log(req.files);
+    // console.log(req.files);
     console.log('Body: ' , req.body);
 
     // store the file on the server
