@@ -88,7 +88,7 @@ var store_contents = function(pdb, file, proc_name){
     .then(data => {
       // TODO: email rep with link
       // console.log(data)
-      if(data.http_code != 200){
+      if(data[proc_name].http_code != 200){
         reject(data[proc_name]);
       }
       resolve(data[proc_name])
