@@ -134,13 +134,6 @@ $$
 
     result.data.wine_farms = wine_farms;
 
-    // ===== wine_farms =====
-    var s = `select wine_farm_id, farm_name from tb_wine_farm;`;
-    var sres = plv8.execute(s);
-    var wine_farms = sres;
-
-    result.data.wine_farms = wine_farms;
-
     // ===== products =====
     var s = `select product_id, description as product_name from tb_product;`;
     var sres = plv8.execute(s);

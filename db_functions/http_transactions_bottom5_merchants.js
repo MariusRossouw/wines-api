@@ -204,7 +204,9 @@ if(http_req.body.filters.reps){
   product_type_filter += ` and ( t.transaction_year in( `+years_filter+` ) and t.transaction_month in (`+product_type_filter_month+`) ) `;
 
 // ****************** bottom5 merchants ******************
-  var sql = `select * from (select distinct mer.merchant_name as name,
+  var sql = `select * from (
+    select distinct mer.merchant_name as name,
+    mer.merchant_id,
     (
       select round(coalesce(sum(t.sale),0),2) 
       from tb_transactions t

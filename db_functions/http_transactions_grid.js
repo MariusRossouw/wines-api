@@ -208,6 +208,7 @@ if(http_req.body.filters.reps){
     from tb_transactions t
     
     inner join tb_merchant mer on mer.merchant_id = t.merchant_id
+    inner join tb_merchant_group mg on mg.merchant_group_id = mer.merchant_group_id
     inner join tb_province prov on prov.province_id = mer.province_id    
 
     inner join tb_profile pro on pro.profile_id = t.profile_id

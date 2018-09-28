@@ -45,29 +45,29 @@ $$
     var first_name = http_req.body.first_name;
     var last_name = http_req.body.last_name;
     var reps = http_req.body.reps || [];
-    var mobile_no = http_req.body.mobile_no || '';
+    var mobile_no_exl = http_req.body.mobile_no_exl || '';
     var type = http_req.body.type || 'Rep';
 
 
     sql_req = `insert into tb_profile
-                (email, password, first_name, last_name, mobile_no, type)
-                values ($1, $2, $3, $4, $5, $6, $7)
-                returning id`;
-    sql_res = plv8.execute(sql_req, email, password, first_name, last_name, mobile_no, type);
+                (email, password, first_name, last_name, mobile_no_exl, type)
+                values ($1, $2, $3, $4, $5, $6)
+                returning profile_id`;
+    sql_res = plv8.execute(sql_req, email, password, first_name, last_name, mobile_no_exl, type);
     if (sql_res.length == 0) {
         result.http_code = 500;
         result.errors.push({
             message: 'Error creating user'
         });
     };
-    result.data.profile_id = sql_res[0].id;
+    result.data.profile_id = sql_res[0].profile_id;
 
     for(var i = 0; i < reps.length; i++){
         var rep = reps[i];
         var selected = rep.selected;
         
         var sql_req2 = `select * from tb_manager_rep_map where rep_id = $1 and manager_id = $2;`;
-        var sql_res2 = plv8.execute(sql_req2,rep.rep_id, sql_res[0].id);
+        var sql_res2 = plv8.execute(sql_req2,rep.profile_id, result.data.profile_id);
 
         var t_id = sql_res2.length > 0 ? sql_res2[0].t_id : null;
 
@@ -78,8 +78,9 @@ $$
                 var i_sql = `insert into tb_manager_rep_map 
                 (manager_id,rep_id,is_active)
                 values
-                ($1,$2,$3);`;
-                var i_sqlres = plv8.execute(i_sql,sql_res[0].id,rep.rep_id,true);
+                ($1,$2,$3)
+                ON CONFLICT (manager_id,rep_id) DO NOTHING;`;
+                var i_sqlres = plv8.execute(i_sql,result.data.profile_id,rep.profile_id,true);
             }else if(!is_active){
                 var i_sql = `update tb_manager_rep_map set is_active = $1 where t_id = $2;`;
                 var i_sqlres = plv8.execute(i_sql,true,t_id);

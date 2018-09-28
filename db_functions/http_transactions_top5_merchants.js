@@ -206,6 +206,7 @@ if(http_req.body.filters.reps){
 
 // ****************** top5 merchants ******************
   var sql = `select * from (select distinct mer.merchant_name as name,
+    mer.merchant_id,
     (
       select round(coalesce(sum(t.sale),0),2) 
       from tb_transactions t

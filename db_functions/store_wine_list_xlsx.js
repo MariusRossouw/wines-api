@@ -33,6 +33,8 @@ $$
                 var wf_sqlres = plv8.execute(wf_sql, farm_name, jdata);
             }catch(err){
                 result.http_code = '403';
+                result.message = 'FARM',
+                result.err_message = err;
                 result.data = {
                     row: row,
                     farm_name: farm_name,
@@ -64,6 +66,8 @@ $$
                 var pt_sqlres = plv8.execute(pt_sql, product_type, jdata);
             }catch(err){
                 result.http_code = '403';
+                result.message = 'PRODUCT TYPE',
+                result.err_message = err;
                 result.data = {
                     row: row,
                     product_type: product_type,
@@ -106,6 +110,8 @@ $$
                 var case_size = str_arr[9].replace('(','').replace(')','');
             }catch(err){
                 result.http_code = '403';
+                result.message = 'PRODUCT CHECKS',
+                result.err_message = err;
                 result.data = {
                     row: row,
                     arr_split: {
@@ -133,6 +139,7 @@ $$
             }catch(err){
                 result.http_code = '403';
                 result.err_message = err;
+                result.message = 'PRODUCT',
                 result.data = {
                     row: row,
                     product_type_id: product_type_id,
@@ -175,6 +182,8 @@ $$
                 var pt_sqlres = plv8.execute(pt_sql, wine_farm_id, product_id);
             }catch(err){
                 result.http_code = '403';
+                result.message = 'PRODUCT/FARM MAP',
+                result.err_message = err;
                 result.data = {
                     row: row,
                     wine_farm_id: wine_farm_id,
@@ -204,6 +213,8 @@ $$
                 var pr_sqlres = plv8.execute(pr_sql, province_name);
             }catch(err){
                 result.http_code = '403';
+                result.message = 'PROVINCE',
+                result.err_message = err;
                 result.data = {
                     row: row,
                     province_name: province_name,
@@ -233,7 +244,7 @@ $$
             // var d_sqlres = plv8.execute(d_sql, province_name);
 
             // var division_id = d_sqlres[0].division_id;
-            
+
             // REGION
             var region_name = worksheet['S'+row] ? worksheet['S'+row].v : 'Other';
             var r_sql = "insert into tb_region (region_name, province_id) values ($1,$2) \
@@ -242,6 +253,8 @@ $$
                 var r_sqlres = plv8.execute(r_sql, province_name, province_id);
             }catch(err){
                 result.http_code = '403';
+                result.message = 'REGION',
+                result.err_message = err;
                 result.data = {
                     row: row,
                     province_name: province_name,
@@ -264,7 +277,7 @@ $$
             }
 
             var region_id = r_sqlres[0].region_id;
-            
+
             // MERCHANT GROUP
             var group_name = worksheet['T'+row] ? worksheet['T'+row].v : 'Other';
             var g_sql = "insert into tb_merchant_group (group_name) values ($1) \
@@ -273,6 +286,8 @@ $$
                 var g_sqlres = plv8.execute(g_sql, group_name);
             }catch(err){
                 result.http_code = '403';
+                result.message = 'MERCHANT GROUP',
+                result.err_message = err;
                 result.data = {
                     row: row,
                     group_name: group_name,
@@ -294,7 +309,7 @@ $$
             }
 
             var merchant_group_id = g_sqlres[0].merchant_group_id;
-            
+
             // MERCHANT
             var merchant_name = worksheet['D'+row] ? worksheet['D'+row].v : 'Other';
             var code = worksheet['A'+row] ? worksheet['A'+row].v : 'Other';;
@@ -308,6 +323,8 @@ $$
                 var m_sqlres = plv8.execute(m_sql, merchant_name, province_id, region_id, merchant_group_id,code,account);
             }catch(err){
                 result.http_code = '403';
+                result.message = 'MERCHANT',
+                result.err_message = err;
                 result.data = {
                     row: row,
                     merchant_name: merchant_name,
@@ -334,7 +351,7 @@ $$
             }
 
             var merchant_id = m_sqlres[0].merchant_id;
-            
+
             // REP PROFILE
             var profile_jdata = jdata;
             // profile_jdata.email_token = plv8.ufn.generateUUID();
@@ -347,14 +364,19 @@ $$
             names.splice(0,1);
             var last_name = names.join(' ');
 
+            var password = first_name + '123';
+
             // var email = worksheet['O'+row] ? worksheet['O'+row].v : null;
             var rep_code = worksheet['E'+row] ? worksheet['E'+row].v : 'Other';
-            var p_sql = "insert into tb_profile (rep_code,rep_name, first_name, last_name) values ($1,$2,$3,$4) \
+            var email = rep_code + '@westerncapewines.co.za';
+            var p_sql = "insert into tb_profile (rep_code,rep_name, first_name, last_name, password,email) values ($1,$2,$3,$4,$5,$6) \
                 ON CONFLICT (rep_code) DO UPDATE SET rep_code=EXCLUDED.rep_code RETURNING profile_id";
             try{
-                var p_sqlres = plv8.execute(p_sql, rep_code, rep_name, first_name, last_name);
+                var p_sqlres = plv8.execute(p_sql, rep_code, rep_name, first_name, last_name, password, email);
             }catch(err){
                 result.http_code = '403';
+                result.err_message = err;
+                result.message = 'PROFILE',
                 result.data = {
                     row: row,
                     rep_name: rep_name,
@@ -387,6 +409,8 @@ $$
                 var p_sqlres = plv8.execute(p_sql, merchant_id, profile_id);
             }catch(err){
                 result.http_code = '403';
+                result.message = 'PROFILE MAP',
+                result.err_message = err;
                 result.data = {
                     row: row,
                     merchant_id: merchant_id,
@@ -407,7 +431,7 @@ $$
                 };
                 return result;
             }
-            
+
             // TRANSACTION
             var t_quantity = worksheet['I'+row] ? worksheet['I'+row].v: 0;
             var t_sale = worksheet['K'+row] ? worksheet['K'+row].v: 0;
@@ -418,11 +442,12 @@ $$
             var t_cases = worksheet['U'+row] ? worksheet['U'+row].v: 0;
             var t_bottles = worksheet['V'+row] ? worksheet['V'+row].v: 0;
             var t_litres = worksheet['W'+row] ? worksheet['W'+row].v: 0;
-            
+
             // var t_code = worksheet['X'+row] ? worksheet['X'+row].v : null;
             var period = worksheet['AB'+row] ? worksheet['AB'+row].v : null;
 
             var t_sql = "insert into tb_transactions ( \
+                    quantity, \
                     product_id, \
                     merchant_id, \
                     profile_id, \
@@ -439,6 +464,7 @@ $$
                 values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) returning transaction_id";
             try{
                 var t_sqlres = plv8.execute(t_sql,
+                t_quantity,
                 product_id,
                 merchant_id,
                 profile_id,
@@ -454,6 +480,8 @@ $$
             );
             }catch(err){
                 result.http_code = '403';
+                result.message = 'TRANSACTION',
+                result.err_message = err;
                 result.data = {
                     row: row,
                     product_id: product_id,

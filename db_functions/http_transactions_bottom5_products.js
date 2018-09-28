@@ -206,6 +206,7 @@ if(http_req.body.filters.reps){
 
 // ****************** bottom5 products ******************
   var sql = `select * from (select distinct prod.product_name as name,
+    prod.product_id,
     (
       select round(coalesce(sum(t.sale),0),2) 
       from tb_transactions t

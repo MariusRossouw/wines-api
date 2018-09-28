@@ -82,11 +82,13 @@ $$
 
                     result.data.last_names.push(last_name)
 
+                    var password = first_name + '123';
+
                     // var email = worksheet['O'+row] ? worksheet['O'+row].v : null;
                     var rep_code = worksheet['E'+row] ? worksheet['E'+row].v : 'Other';
-                    var p_sql = "insert into tb_profile (rep_code,rep_name, first_name, last_name) values ($1,$2,$3,$4) \
+                    var p_sql = "insert into tb_profile (rep_code,rep_name, first_name, last_name, password) values ($1,$2,$3,$4,$5) \
                         ON CONFLICT (rep_code) DO UPDATE SET rep_code=EXCLUDED.rep_code RETURNING profile_id";
-                    var p_sqlres = plv8.execute(p_sql, rep_code, rep_name, first_name, last_name);
+                    var p_sqlres = plv8.execute(p_sql, rep_code, rep_name, first_name, last_name,password);
 
                     var profile_id = p_sqlres[0].profile_id;
 

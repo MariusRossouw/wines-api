@@ -175,8 +175,10 @@ if(http_req.body.filters.reps){
   var legend = [];
   var legend_budget = [];
   var legend_sale = [];
+  var legend_volume = [];
   var legend_budget_accum = [];
   var legend_sale_accum = [];
+  var legend_volume_accum = [];
 
   var temp_str = ``;
 
@@ -189,10 +191,13 @@ if(http_req.body.filters.reps){
     };
     budget = [];
     sale = [];
+    volume = [];
+    volume_accum = [];
     budget_accum = [];
     sale_accum = [];
     sale_accum_sum = 0;
     budget_accum_sum = 0;
+    volume_accum_sum = 0;
     for(var b = 0; b < graph_months.length; b++){
 
       var s = `select round(coalesce(sum(b.budget_amount),0),2) budget_total
@@ -253,7 +258,8 @@ if(http_req.body.filters.reps){
       budget_accum.push(Math.round(budget_accum_sum*100)/100);
 
       var transaction_where = ``;
-      var s = `select round(coalesce(sum(t.sale),0),2) sale_total
+      var s = `select round(coalesce(sum(t.sale),0),2) sale_total,
+        round(coalesce(sum(t.litres),0),2) volume
         from tb_transactions t
         where 
           t.transaction_month = $1 and t.transaction_year = $2 `;
@@ -293,11 +299,16 @@ if(http_req.body.filters.reps){
         transaction_where += ` and t.profile_id in(`+reps_str+`) `;
       }
       s += transaction_where;
-      var sale_total = plv8.execute(s,graph_months[b], years[a])[0].sale_total;
+      var sres = plv8.execute(s,graph_months[b], years[a]);
+      var sale_total = sres[0].sale_total;
+      var volume_total = sres[0].volume;
 
       sale.push(sale_total);
+      volume.push(volume_total);
+      volume_accum_sum += (volume_total);
       sale_accum_sum += (sale_total);
       sale_accum.push(Math.round(sale_accum_sum*100)/100);
+      volume_accum.push(Math.round(volume_accum_sum*100)/100);
 
       temp_str += `'`+graph_months[b]+`',`;
     };
@@ -305,14 +316,18 @@ if(http_req.body.filters.reps){
     year.budget_accum = budget_accum;
     year.sale = sale;
     year.sale_accum = sale_accum;
+    year.volume = volume;
+    year.volume_accum = volume_accum;
     result_years.push(year);
     legend_budget.push('budget'+years[a]);
     legend_sale.push('sale'+years[a]);
+    legend_volume.push('volume'+years[a]);
     legend_budget_accum.push('budget_accum'+years[a]);
     legend_sale_accum.push('sale_accum'+years[a]);
+    legend_volume_accum.push('volume_accum'+years[a]);
   };
 
-  result.data.legend = legend.concat(legend_budget,legend_sale,legend_budget_accum,legend_sale_accum);
+  result.data.legend = legend.concat(legend_budget,legend_sale,legend_volume,legend_budget_accum,legend_sale_accum,legend_volume_accum);
   result.data.years = result_years;
   result.data.graph_months = graph_months;
 
