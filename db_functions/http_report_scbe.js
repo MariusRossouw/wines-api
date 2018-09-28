@@ -1,4 +1,4 @@
-create or replace function http_report_scbde(req json) returns JSON as
+create or replace function http_report_scbe(req json) returns JSON as
 $$
 if (!plv8.ufn) {
 	var sup = plv8.find_function("plv8_startup");
@@ -27,8 +27,8 @@ var result = {
   http_code:200,
   message:'',
   data:{
-  	rowDataSCBDE:[],
-  	headerNamesSCBDE: []
+  	rowDataSCBE:[],
+  	headerNamesSCBE: []
   }
 };
 
@@ -262,8 +262,8 @@ for(var i = 0; i < sres.length; i++){
   result_set.push(sres[i]);
 }
 
-result.data.rowDataSCBDE = result_set;
-result.data.headerNamesSCBDE = headings;
+result.data.rowDataSCBE = result_set;
+result.data.headerNamesSCBE = headings;
 
 function make_row (){
   return {

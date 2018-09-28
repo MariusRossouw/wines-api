@@ -47,7 +47,7 @@ exports.file_upload_64 = function(req, res) {
   }
 
   var new_file_name = "";
-  
+
   if (req.body.uuid) {
     new_file_name = req.body.uuid + new Date().getTime();
   } else {
@@ -88,6 +88,9 @@ var store_contents = function(pdb, file, proc_name){
     .then(data => {
       // TODO: email rep with link
       // console.log(data)
+      if(data.http_code != 200){
+        reject(data);
+      }
       resolve(data[proc_name])
     })
     .catch(err => {

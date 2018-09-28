@@ -435,7 +435,7 @@ $$
             // TRANSACTION
             var t_quantity = worksheet['I'+row] ? worksheet['I'+row].v: 0;
             var t_sale = worksheet['K'+row] ? worksheet['K'+row].v: 0;
-            var t_transaction_day = moment(worksheet['L'+row] ? worksheet['L'+row].v: null).format('DD');
+            var t_transaction_day = moment(worksheet['L'+row] ? worksheet['L'+row].v: '').format('DD');
             var t_type = worksheet['M'+row] ? worksheet['M'+row].v: 'Other';
             var t_transaction_month = worksheet['N'+row] ? worksheet['N'+row].v: null;
             var t_transaction_year = worksheet['O'+row] ? worksheet['O'+row].v: null;
