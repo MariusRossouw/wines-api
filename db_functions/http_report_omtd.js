@@ -90,7 +90,7 @@ left join (
 	select m.code, sum(t.sale) sales
 	from tb_transactions t
 	inner join tb_merchant m on m.merchant_id = t.merchant_id
-	where t.period = $4
+	where t.period = $3
 	and transaction_month = $1
 	group by m.code
 ) sa1 on sa1.code = mer.code
@@ -98,15 +98,15 @@ left join (
 	select m.code, sum(b.budget_amount) budgets
 	from tb_budget b
 	inner join tb_merchant m on m.merchant_id = b.merchant_id
-	where b.budget_month ~* concat(substr($1, 0, 4), substr($2, (char_length($2)-1) , (char_length($2)-1)))
-	and b.budget_period = $4
+	where b.budget_month ~* $1
+	and b.budget_period = $3
 	group by m.code
 ) bu1 on bu1.code = mer.code
 left join (
 	select m.code, sum(t.sale) sales
 	from tb_transactions t
 	inner join tb_merchant m on m.merchant_id = t.merchant_id
-	where t.period = $5
+	where t.period = $4
 	and transaction_month = $1
 	group by m.code
 ) sa2 on sa2.code = mer.code
@@ -114,15 +114,15 @@ left join (
 	select m.code, sum(b.budget_amount) budgets
 	from tb_budget b
 	inner join tb_merchant m on m.merchant_id = b.merchant_id
-	where b.budget_month ~* concat(substr($1, 0, 4), substr($3, (char_length($3)-1) , (char_length($3)-1)))
-	and b.budget_period = $5
+	where b.budget_month ~* $1
+	and b.budget_period = $4
 	group by m.code
 ) bu2 on bu2.code = mer.code
 left join (
 	select m.code, sum(t.cases) cases
 	from tb_transactions t
 	inner join tb_merchant m on m.merchant_id = t.merchant_id
-	where t.period = $4
+	where t.period = $3
 	and transaction_month = $1
 	group by m.code
 ) ca1 on ca1.code = mer.code
@@ -130,11 +130,11 @@ left join (
 	select m.code, sum(t.cases) cases
 	from tb_transactions t
 	inner join tb_merchant m on m.merchant_id = t.merchant_id
-	where t.period = $5
+	where t.period = $4
 	and transaction_month = $1
 	group by m.code
 ) ca2 on ca2.code = mer.code`;
-var sres = plv8.execute(s,month,year,year_prev,period,period_prev);
+var sres = plv8.execute(s,month_abr,year_prev,period,period_prev);
 
 result.data.rowDataOMTD = sres;
 result.data.headerNamesOMTD = headings;
