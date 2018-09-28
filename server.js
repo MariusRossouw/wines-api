@@ -117,6 +117,13 @@ app.post('/uploads/wine_list', function(req, res){
     files.upload_file_store(req,res);
 });
 
+app.post('/test', function(req,res){
+    var str = 'BB GrapeJuice Other      2016 Kosher 750 ml (EA)';
+    str.replace(/   +/g, ' - ');
+    var str_arr = str.split(/[  ]+/);
+    res.send({str: str, str_arr: str_arr});
+})
+
 app.post('/uploads/budget', function(req, res){
     req.body.proc_name = 'store_budget_xlsx';
     files.upload_file_store(req,res);
@@ -139,7 +146,7 @@ var gen_stored_procedure = function(req, res){
         var http_code = 200;
         if(result.http_code){
             http_code = result.http_code
-        } 
+        }
         res.status(http_code);
         res.send(result);
     });

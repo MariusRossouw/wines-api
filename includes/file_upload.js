@@ -15,7 +15,7 @@ exports.file_upload = function(req, res) {
     console.log('What!!!!!');
     res.send(500);
   }else{
-      console.log(req.files);
+      // console.log(req.files);
       console.log('Body: ' , req.body);
       var file_name = req.body.uuid + '.png';
       req.files.file.mv(__dirname + '/../uploads/' + file_name, function(err) {
