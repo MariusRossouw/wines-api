@@ -6,7 +6,7 @@ $$
 	}
 
 	var result = {
-        http_code: 200, message: 'Wine list data stored', data: {
+        http_code: 200, message: 'Budget data stored', data: {
         last_names: []
     }}
 
@@ -67,7 +67,7 @@ $$
                     var m_sqlres = plv8.execute(m_sql, merchant_name, province_id, region_id, merchant_group_id,code,account);
 
                     merchant_id = m_sqlres[0].merchant_id;
-                    
+
                     // REP PROFILE
                     var profile_jdata = jdata;
                     // profile_jdata.email_token = plv8.ufn.generateUUID();
@@ -79,8 +79,6 @@ $$
                     var first_name = names[0];
                     names.splice(0,1);
                     var last_name = names.join(' ');
-
-                    result.data.last_names.push(last_name)
 
                     var password = first_name + '123';
 

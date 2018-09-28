@@ -21,7 +21,7 @@ $$
 
             // Farm/category/type/name/cultivar/vintage/special/bottle size/volume/case packing
             var str = worksheet['H'+row] ? worksheet['H'+row].v : '';
-            str = str.replace(/   +/g, ' - ');
+            str = str.replace(/\s\s\s/g, ' - ');
             var str_arr = str.split(/[  ]+/);
 
     		// FARM

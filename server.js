@@ -119,7 +119,7 @@ app.post('/uploads/wine_list', function(req, res){
 
 app.post('/test', function(req,res){
     var str = 'BB GrapeJuice Other      2016 Kosher 750 ml (EA)';
-    str.replace(/   +/g, ' - ');
+    str = str.replace(/\s\s\s/g, ' - ');
     var str_arr = str.split(/[  ]+/);
     res.send({str: str, str_arr: str_arr});
 })
