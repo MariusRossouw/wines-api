@@ -261,6 +261,7 @@ for(var i = 0; i < sres.length; i++){
   row.y2cases += sres[i].y2cases;
   result_set.push(sres[i]);
 }
+result_set.push(row);
 
 result.data.rowDataSCBE = result_set;
 result.data.headerNamesSCBE = headings;

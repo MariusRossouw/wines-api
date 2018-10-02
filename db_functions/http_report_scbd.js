@@ -251,6 +251,8 @@ for(var i = 0; i < sres.length; i++){
   row.y2cases += sres[i].y2cases;
   result_set.push(sres[i]);
 }
+// add the total of the last set(not part of the loop)
+result_set.push(row);
 
 result.data.rowDataSCBD = result_set;
 result.data.headerNamesSCBD = headings;

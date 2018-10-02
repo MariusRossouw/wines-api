@@ -148,7 +148,7 @@ CREATE TABLE IF NOT EXISTS tb_profile(
   jdata jsonb,
   status varchar(200),
   rep_code varchar(200) unique,
-  rep_name varchar(50), 
+  rep_name varchar(50),
   create_time timestamp without time zone default (now() at time zone 'utc'),
   update_time timestamp without time zone default (now() at time zone 'utc'),
   verified BOOLEAN DEFAULT true,
@@ -334,7 +334,7 @@ CREATE TABLE IF NOT EXISTS tb_wine_farm_profile_map(
   wine_farm_profile_id serial primary key,
   wine_farm_id int references tb_wine_farm(wine_farm_id) not null,
   profile_id int references tb_profile(profile_id) not null,
-  
+
   create_time timestamp without time zone default (now() at time zone 'utc'),
 
   CONSTRAINT u_wine_farm_profile UNIQUE (wine_farm_id,profile_id)
@@ -344,7 +344,7 @@ CREATE TABLE IF NOT EXISTS tb_distributor_product_map(
   distributor_product_id serial primary key,
   distributor_id int references tb_distributor(distributor_id) not null,
   product_id int references tb_product(product_id) not null,
-  
+
   create_time timestamp without time zone default (now() at time zone 'utc'),
 
   CONSTRAINT u_distributor_product UNIQUE (distributor_id,product_id)
@@ -388,8 +388,10 @@ CREATE TABLE IF NOT EXISTS tb_transactions(
   transaction_day varchar(2),
   transaction_code varchar(200) unique,
   jdata jsonb,
+  upload_row_number int,
   create_time timestamp without time zone default (now() at time zone 'utc'),
-  update_time timestamp without time zone default (now() at time zone 'utc')
+  update_time timestamp without time zone default (now() at time zone 'utc'),
+  CONSTRAINT u_transaction_row UNIQUE (merchant_id,profile_id,transaction_year,transaction_month,transaction_day,sale,upload_row_number)
 );
 
 CREATE TABLE IF NOT EXISTS tb_budget(

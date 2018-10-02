@@ -251,6 +251,8 @@ for(var i = 0; i < sres.length; i++){
   result_set.push(sres[i]);
 }
 
+result_set.push(row)
+
 result.data.rowDataSCBD2 = result_set;
 result.data.headerNamesSCBD2 = headings;
 

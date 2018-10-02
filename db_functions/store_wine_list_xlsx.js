@@ -459,9 +459,11 @@ $$
                     transaction_month, \
                     transaction_day, \
                     transaction_type, \
-                    period \
+                    period, \
+                    upload_row_number \
                 ) \
-                values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) returning transaction_id";
+                values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) \
+                ON CONFLICT (merchant_id,profile_id,transaction_year,transaction_month,transaction_day,sale,upload_row_number) DO UPDATE SET merchant_id=EXCLUDED.merchant_id returning transaction_id";
             try{
                 var t_sqlres = plv8.execute(t_sql,
                 t_quantity,
@@ -476,7 +478,8 @@ $$
                 t_transaction_month,
                 t_transaction_day,
                 t_type,
-                period
+                period,
+                row
             );
             }catch(err){
                 result.http_code = '403';
