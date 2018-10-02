@@ -139,7 +139,7 @@ var s = `select x.code , x.province_name as "province",
     from tb_transactions t
     inner join tb_merchant m on m.merchant_id = t.merchant_id
     inner join tb_province p on p.province_id = m.province_id
-    where t.period = $3
+    where t.period = $2
     and transaction_month = $1
     group by m.code, province_name
   ) m1 on m1.code = x.code and m1.province_name = x.province_name
@@ -148,7 +148,7 @@ var s = `select x.code , x.province_name as "province",
     from tb_transactions t
     inner join tb_merchant m on m.merchant_id = t.merchant_id
     inner join tb_province p on p.province_id = m.province_id
-    where t.period = $4
+    where t.period = $3
     and transaction_month = $1
     group by m.code, province_name
   ) m2 on m2.code = x.code and m2.province_name = x.province_name
@@ -157,8 +157,8 @@ var s = `select x.code , x.province_name as "province",
     from tb_budget b
     inner join tb_merchant m on m.merchant_id = b.merchant_id
     inner join tb_province p on p.province_id = m.province_id
-    where b.budget_month ~* concat(substr($1, 0, 4), substr($2, (char_length($2)-1) , (char_length($2)-1)))
-    and b.budget_period = $3
+    where b.budget_month ~* $5
+    and b.budget_period = $2
     group by m.code, province_name
   ) bu1 on bu1.code = x.code and bu1.province_name = x.province_name
   left join (
@@ -166,7 +166,7 @@ var s = `select x.code , x.province_name as "province",
     from tb_transactions t
     inner join tb_merchant m on m.merchant_id = t.merchant_id
     inner join tb_province p on p.province_id = m.province_id
-    where t.period = $3
+    where t.period = $2
     and transaction_month = $1
     group by m.code, p.province_name
   ) mc1 on mc1.code = x.code and mc1.province_name = x.province_name
@@ -175,7 +175,7 @@ var s = `select x.code , x.province_name as "province",
     from tb_transactions t
     inner join tb_merchant m on m.merchant_id = t.merchant_id
     inner join tb_province p on p.province_id = m.province_id
-    where t.period = $4
+    where t.period = $3
     and transaction_month = $1
     group by m.code, p.province_name
   ) mc2 on mc2.code = x.code and mc2.province_name = x.province_name
@@ -184,7 +184,7 @@ var s = `select x.code , x.province_name as "province",
     from tb_transactions t
     inner join tb_merchant m on m.merchant_id = t.merchant_id
     inner join tb_province p on p.province_id = m.province_id
-    where t.period = $3
+    where t.period = $2
     group by m.code, province_name
   ) ys1 on ys1.code = x.code and ys1.province_name = x.province_name
   left join (
@@ -192,8 +192,8 @@ var s = `select x.code , x.province_name as "province",
     from tb_transactions t
     inner join tb_merchant m on m.merchant_id = t.merchant_id
     inner join tb_province p on p.province_id = m.province_id
-    where period = $4
-    and (concat(t.transaction_year, '-' , t.transaction_month, '-', t.transaction_day))::timestamp < $5
+    where period = $3
+    and (concat(t.transaction_year, '-' , t.transaction_month, '-', t.transaction_day))::timestamp < $4
     group by m.code, p.province_name
   ) ys2 on ys2.code = x.code and ys2.province_name = x.province_name
   left join (
@@ -201,7 +201,7 @@ var s = `select x.code , x.province_name as "province",
     from tb_budget b
     inner join tb_merchant m on m.merchant_id = b.merchant_id
     inner join tb_province p on p.province_id = m.province_id
-    where b.budget_period = $3
+    where b.budget_period = $2
     group by m.code, province_name
   ) bu2 on bu2.code = x.code and bu2.province_name = x.province_name
   left join (
@@ -209,7 +209,7 @@ var s = `select x.code , x.province_name as "province",
     from tb_transactions t
     inner join tb_merchant m on m.merchant_id = t.merchant_id
     inner join tb_province p on p.province_id = m.province_id
-    where t.period = $3
+    where t.period = $2
     group by m.code, p.province_name
   ) yc1 on yc1.code = x.code and yc1.province_name = x.province_name
   left join (
@@ -217,12 +217,12 @@ var s = `select x.code , x.province_name as "province",
     from tb_transactions t
     inner join tb_merchant m on m.merchant_id = t.merchant_id
     inner join tb_province p on p.province_id = m.province_id
-    where t.period = $4
+    where t.period = $3
     group by m.code, p.province_name
   ) yc2 on yc2.code = x.code and yc2.province_name = x.province_name
   order by x.code , x.province_name
 `;
-var sres = plv8.execute(s,month,year,period,period_prev,query_date);
+var sres = plv8.execute(s,month,period,period_prev,query_date,month_abr);
 
 var temp_code = '';
 

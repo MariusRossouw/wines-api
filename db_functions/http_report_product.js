@@ -148,10 +148,11 @@ left join (
 	group by product_name
 ) m2 on m2.product_name = x.product_name
 left join (
-	select p.product_name, sum(b.budget_amount) budgets
-	from tb_budget b
-  inner join tb_product p on p.product_id = (select distinct t.product_id from tb_transactions t where t.merchant_id = b.merchant_id)
-	where b.budget_month ~* concat(substr($1, 0, 4), substr($2, (char_length($2)-1) , (char_length($2)-1)))
+	select  distinct product_name, 0 as budgets
+  from tb_budget b
+  inner join tb_transactions t on t.merchant_id = b.merchant_id
+  inner join tb_product p on p.product_id = t.product_id
+	where b.budget_month ~* $2
 	and b.budget_period = $3
 	group by product_name
 ) bu1 on bu1.product_name = x.product_name
@@ -187,11 +188,10 @@ left join (
 	group by p.product_name
 ) ys2 on ys2.product_name = x.product_name
 left join (
-	select p.product_name, sum(b.budget_amount) budgets
-	from tb_budget b
-  inner join tb_product p on p.product_id = (select distinct t.product_id from tb_transactions t where t.merchant_id = b.merchant_id)
-	where b.budget_period = $3
-	group by product_name
+	select  distinct product_name, 0 as budgets
+  from tb_budget b
+  inner join tb_transactions t on t.merchant_id = b.merchant_id
+  inner join tb_product p on p.product_id = t.product_id
 ) bu2 on bu2.product_name = x.product_name
 left join (
 	select p.product_name, sum(t.cases) cases
@@ -208,7 +208,7 @@ left join (
 	group by p.product_name
 ) yc2 on yc2.product_name = x.product_name
 `;
-var sres = plv8.execute(s,month,year,period,period_prev,query_date);
+var sres = plv8.execute(s,month,month_abr,period,period_prev,query_date);
 
 result.data.rowDataPRODUCT = sres;
 result.data.headerNamesPRODUCT = headings;

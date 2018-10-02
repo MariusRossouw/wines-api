@@ -138,7 +138,7 @@ var s = `select x.code , x.group_name as "merchant_group",
 		from tb_transactions t
 		inner join tb_merchant m on m.merchant_id = t.merchant_id
 		inner join tb_merchant_group mg on mg.merchant_group_id = m.merchant_group_id
-		where t.period = $3
+		where t.period = $2
 		and transaction_month = $1
 		group by m.code, group_name
 	) m1 on m1.code = x.code and m1.group_name = x.group_name
@@ -147,7 +147,7 @@ var s = `select x.code , x.group_name as "merchant_group",
 		from tb_transactions t
 		inner join tb_merchant m on m.merchant_id = t.merchant_id
 		inner join tb_merchant_group mg on mg.merchant_group_id = m.merchant_group_id
-		where t.period = $4
+		where t.period = $3
 		and transaction_month = $1
 		group by m.code, group_name
 	) m2 on m2.code = x.code and m2.group_name = x.group_name
@@ -156,8 +156,8 @@ var s = `select x.code , x.group_name as "merchant_group",
 		from tb_budget b
 		inner join tb_merchant m on m.merchant_id = b.merchant_id
 		inner join tb_merchant_group mg on mg.merchant_group_id = m.merchant_group_id
-		where b.budget_month ~* concat(substr($1, 0, 4), substr($2, (char_length($2)-1) , (char_length($2)-1)))
-		and b.budget_period = $3
+		where b.budget_month ~* $5
+		and b.budget_period = $2
 		group by m.code, group_name
 	) bu1 on bu1.code = x.code and bu1.group_name = x.group_name
 	left join (
@@ -165,7 +165,7 @@ var s = `select x.code , x.group_name as "merchant_group",
 		from tb_transactions t
 		inner join tb_merchant m on m.merchant_id = t.merchant_id
 		inner join tb_merchant_group mg on mg.merchant_group_id = m.merchant_group_id
-		where t.period = $3
+		where t.period = $2
 		and transaction_month = $1
 		group by m.code, mg.group_name
 	) mc1 on mc1.code = x.code and mc1.group_name = x.group_name
@@ -174,7 +174,7 @@ var s = `select x.code , x.group_name as "merchant_group",
 		from tb_transactions t
 		inner join tb_merchant m on m.merchant_id = t.merchant_id
 		inner join tb_merchant_group mg on mg.merchant_group_id = m.merchant_group_id
-		where t.period = $4
+		where t.period = $3
 		and transaction_month = $1
 		group by m.code, mg.group_name
 	) mc2 on mc2.code = x.code and mc2.group_name = x.group_name
@@ -183,7 +183,7 @@ var s = `select x.code , x.group_name as "merchant_group",
 		from tb_transactions t
 		inner join tb_merchant m on m.merchant_id = t.merchant_id
 		inner join tb_merchant_group mg on mg.merchant_group_id = m.merchant_group_id
-		where t.period = $3
+		where t.period = $2
 		group by m.code, group_name
 	) ys1 on ys1.code = x.code and ys1.group_name = x.group_name
 	left join (
@@ -191,8 +191,8 @@ var s = `select x.code , x.group_name as "merchant_group",
 		from tb_transactions t
 		inner join tb_merchant m on m.merchant_id = t.merchant_id
 		inner join tb_merchant_group mg on mg.merchant_group_id = m.merchant_group_id
-		where period = $4
-		and (concat(t.transaction_year, '-' , t.transaction_month, '-', t.transaction_day))::timestamp < $5
+		where period = $3
+		and (concat(t.transaction_year, '-' , t.transaction_month, '-', t.transaction_day))::timestamp < $4
 		group by m.code, mg.group_name
 	) ys2 on ys2.code = x.code and ys2.group_name = x.group_name
 	left join (
@@ -200,7 +200,7 @@ var s = `select x.code , x.group_name as "merchant_group",
 		from tb_budget b
 		inner join tb_merchant m on m.merchant_id = b.merchant_id
 		inner join tb_merchant_group mg on mg.merchant_group_id = m.merchant_group_id
-		where b.budget_period = $3
+		where b.budget_period = $2
 		group by m.code, group_name
 	) bu2 on bu2.code = x.code and bu2.group_name = x.group_name
 	left join (
@@ -208,7 +208,7 @@ var s = `select x.code , x.group_name as "merchant_group",
 		from tb_transactions t
 		inner join tb_merchant m on m.merchant_id = t.merchant_id
 		inner join tb_merchant_group mg on mg.merchant_group_id = m.merchant_group_id
-		where t.period = $3
+		where t.period = $2
 		group by m.code, mg.group_name
 	) yc1 on yc1.code = x.code and yc1.group_name = x.group_name
 	left join (
@@ -216,11 +216,11 @@ var s = `select x.code , x.group_name as "merchant_group",
 		from tb_transactions t
 		inner join tb_merchant m on m.merchant_id = t.merchant_id
 		inner join tb_merchant_group mg on mg.merchant_group_id = m.merchant_group_id
-		where t.period = $4
+		where t.period = $3
 		group by m.code, mg.group_name
 	) yc2 on yc2.code = x.code and yc2.group_name = x.group_name
 `;
-var sres = plv8.execute(s,month,year,period,period_prev,query_date);
+var sres = plv8.execute(s,month,period,period_prev,query_date,month_abr);
 
 
 var temp_code = '';

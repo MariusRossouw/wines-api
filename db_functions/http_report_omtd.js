@@ -98,7 +98,7 @@ left join (
 	select m.code, sum(b.budget_amount) budgets
 	from tb_budget b
 	inner join tb_merchant m on m.merchant_id = b.merchant_id
-	where b.budget_month ~* $1
+	where b.budget_month ~* $2
 	and b.budget_period = $3
 	group by m.code
 ) bu1 on bu1.code = mer.code
@@ -114,7 +114,7 @@ left join (
 	select m.code, sum(b.budget_amount) budgets
 	from tb_budget b
 	inner join tb_merchant m on m.merchant_id = b.merchant_id
-	where b.budget_month ~* $1
+	where b.budget_month ~* $2
 	and b.budget_period = $4
 	group by m.code
 ) bu2 on bu2.code = mer.code
@@ -134,7 +134,7 @@ left join (
 	and transaction_month = $1
 	group by m.code
 ) ca2 on ca2.code = mer.code`;
-var sres = plv8.execute(s,month_abr,year_prev,period,period_prev);
+var sres = plv8.execute(s,month,month_abr,period,period_prev);
 
 result.data.rowDataOMTD = sres;
 result.data.headerNamesOMTD = headings;

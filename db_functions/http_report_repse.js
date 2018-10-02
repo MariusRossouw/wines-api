@@ -136,9 +136,9 @@ left join (
 	from tb_transactions t
   inner join tb_profile p on p.profile_id = t.profile_id
   inner join tb_merchant m on m.merchant_id = t.merchant_id
-  where t.period = $3
+  where t.period = $2
   and transaction_month = $1
-  and m.code NOT ILIKE $6
+  and m.code NOT ILIKE $5
 	group by p.rep_name
 ) m1 on m1.rep_name = x.rep_name
 left join (
@@ -146,9 +146,9 @@ left join (
 	from tb_transactions t
   inner join tb_profile p on p.profile_id = t.profile_id
   inner join tb_merchant m on m.merchant_id = t.merchant_id
-  where t.period = $4
+  where t.period = $3
   and transaction_month = $1
-  and m.code NOT ILIKE $6
+  and m.code NOT ILIKE $5
 	group by rep_name
 ) m2 on m2.rep_name = x.rep_name
 left join (
@@ -157,9 +157,9 @@ left join (
   inner join tb_merchant_profile_map mpm on mpm.merchant_id = b.merchant_id
   inner join tb_profile p on p.profile_id = mpm.profile_id
   inner join tb_merchant m on m.merchant_id = mpm.merchant_id
-	where b.budget_month ~* concat(substr($1, 0, 4), substr($2, (char_length($2)-1) , (char_length($2)-1)))
-  and b.budget_period = $3
-  and m.code NOT ILIKE $6
+	where b.budget_month ~* $6
+  and b.budget_period = $2
+  and m.code NOT ILIKE $5
 	group by rep_name
 ) bu1 on bu1.rep_name = x.rep_name
 left join (
@@ -167,9 +167,9 @@ left join (
 	from tb_transactions t
   inner join tb_profile p on p.profile_id = t.profile_id
   inner join tb_merchant m on m.merchant_id = t.merchant_id
-  where t.period = $3
+  where t.period = $2
   and transaction_month = $1
-  and m.code NOT ILIKE $6
+  and m.code NOT ILIKE $5
 	group by p.rep_name
 ) mc1 on mc1.rep_name = x.rep_name
 left join (
@@ -177,9 +177,9 @@ left join (
 	from tb_transactions t
   inner join tb_profile p on p.profile_id = t.profile_id
   inner join tb_merchant m on m.merchant_id = t.merchant_id
-  where t.period = $4
+  where t.period = $3
   and transaction_month = $1
-  and m.code NOT ILIKE $6
+  and m.code NOT ILIKE $5
 	group by p.rep_name
 ) mc2 on mc2.rep_name = x.rep_name
 left join (
@@ -187,8 +187,8 @@ left join (
 	from tb_transactions t
   inner join tb_profile p on p.profile_id = t.profile_id
   inner join tb_merchant m on m.merchant_id = t.merchant_id
-  where t.period = $3
-  and m.code NOT ILIKE $6
+  where t.period = $2
+  and m.code NOT ILIKE $5
 	group by rep_name
 ) ys1 on ys1.rep_name = x.rep_name
 left join (
@@ -196,9 +196,9 @@ left join (
 	from tb_transactions t
   inner join tb_profile p on p.profile_id = t.profile_id
   inner join tb_merchant m on m.merchant_id = t.merchant_id
-  where period = $4
-  and m.code NOT ILIKE $6
-  and (concat(t.transaction_year, '-' , t.transaction_month, '-', t.transaction_day))::timestamp < $5
+  where period = $3
+  and m.code NOT ILIKE $5
+  and (concat(t.transaction_year, '-' , t.transaction_month, '-', t.transaction_day))::timestamp < $4
 	group by p.rep_name
 ) ys2 on ys2.rep_name = x.rep_name
 left join (
@@ -207,8 +207,8 @@ left join (
   inner join tb_merchant_profile_map mpm on mpm.merchant_id = b.merchant_id
   inner join tb_profile p on p.profile_id = mpm.profile_id
   inner join tb_merchant m on m.merchant_id = mpm.merchant_id
-  where b.budget_period = $3
-  and m.code NOT ILIKE $6
+  where b.budget_period = $2
+  and m.code NOT ILIKE $5
 	group by rep_name
 ) bu2 on bu2.rep_name = x.rep_name
 left join (
@@ -216,8 +216,8 @@ left join (
 	from tb_transactions t
   inner join tb_profile p on p.profile_id = t.profile_id
   inner join tb_merchant m on m.merchant_id = t.merchant_id
-  where t.period = $3
-  and m.code NOT ILIKE $6
+  where t.period = $2
+  and m.code NOT ILIKE $5
 	group by p.rep_name
 ) yc1 on yc1.rep_name = x.rep_name
 left join (
@@ -225,12 +225,12 @@ left join (
 	from tb_transactions t
   inner join tb_profile p on p.profile_id = t.profile_id
   inner join tb_merchant m on m.merchant_id = t.merchant_id
-  where t.period = $4
-  and m.code NOT ILIKE $6
+  where t.period = $3
+  and m.code NOT ILIKE $5
 	group by p.rep_name
 ) yc2 on yc2.rep_name = x.rep_name
 `;
-var sres = plv8.execute(s,month,year,period,period_prev,query_date,code_check);
+var sres = plv8.execute(s,month,period,period_prev,query_date,code_check,month_abr);
 
 result.data.rowDataREPSE = sres;
 result.data.headerNamesREPSE = headings;
