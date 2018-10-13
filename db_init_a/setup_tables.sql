@@ -306,6 +306,7 @@ CREATE TABLE IF NOT EXISTS tb_wine_farm(
   wine_farm_id serial primary key,
 
   farm_name varchar(200) UNIQUE,
+  farm_name_alias varchar(200) UNIQUE,
   address_line_1 varchar(200),
   address_line_2 varchar(200),
   address_line_3 varchar(200),
