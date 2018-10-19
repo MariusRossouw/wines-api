@@ -70,8 +70,8 @@ app.set('port', port);
 app.use(favicon(path.join(__dirname,"/favicon.ico")));
 app.use('/files',express.static(__dirname + '/uploads')); //will look for a static file here. If not will continue.
 app.use('/pdfs',express.static(__dirname + '/pdf_docs')); //will look for a static file here. If not will continue.
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+app.use(bodyParser.json({limit: '100mb'}));
+app.use(bodyParser.urlencoded({limit: '100mb', extended: true}));
 app.use(methodOverride());
 app.use(allowCrossDomain);
 app.use(dontcache);
