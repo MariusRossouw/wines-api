@@ -73,7 +73,7 @@ exports.file_upload_64 = function(req, res) {
 // ===== Wine specfic =====
 
 var read_wine_file = function(file){
-  return new Promise((resolve,reject)){
+  return new Promise((resolve,reject)=>{
     try {
       var workbook = xlsx.readFile(file);
       var first_sheet_name = workbook.SheetNames[0];
