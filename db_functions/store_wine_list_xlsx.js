@@ -25,11 +25,13 @@ $$
             // var str_arr = str.split(/[  ]+/);
 
             var str = worksheet['H'+row] ? worksheet['H'+row].v : '';
+            str = str.replace(/@@@@@@@@@@@@@@/g, '@-@-@-@-@-@-@-@');
             str = str.replace(/@@@@@@@@@@@@@/g, '@-@-@-@-@-@-@');
             str = str.replace(/@@@@@@@@@@@/g, '@-@-@-@-@-@');
             str = str.replace(/@@@@@@@@@/g, '@-@-@-@-@');
             str = str.replace(/@@@@@@@/g, '@-@-@-@');
             str = str.replace(/@@@@@/g, '@-@-@');
+            str = str.replace(/@@@@/g, '@-@-@');
             str = str.replace(/@@@/g, '@-@');
             var str_arr = str.split(/[@]+/);
 

@@ -162,7 +162,7 @@ app.post('/*', gen_stored_procedure);
 // ============== Start listening ===========================
 
 http.createServer(app).listen(app.get('port'), function(){
-  console.log('CanSERVE App API listening on port ' + app.get('port'));
+  console.log('Wines App API listening on port ' + app.get('port'));
 });
 
 
