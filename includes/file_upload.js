@@ -83,6 +83,7 @@ var store_contents = function(pdb, file, proc_name){
       console.log(err);
       reject({http_code: 500, message: 'Failed to read xl file'})
     }
+    console.log(typeof worksheet);
 
     pdb.proc(proc_name, worksheet)
     .then(data => {
