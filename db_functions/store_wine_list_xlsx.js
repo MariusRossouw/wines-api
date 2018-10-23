@@ -1,3 +1,4 @@
+
 create or replace function store_wine_list_xlsx(input json) returns JSON as
 $$
 	if(!plv8.ufn){
@@ -25,11 +26,13 @@ $$
             // var str_arr = str.split(/[  ]+/);
 
             var str = worksheet['H'+row] ? worksheet['H'+row].v : '';
+            str = str.replace(/@@@@@@@@@@@@@@/g, '@-@-@-@-@-@-@-@');
             str = str.replace(/@@@@@@@@@@@@@/g, '@-@-@-@-@-@-@');
             str = str.replace(/@@@@@@@@@@@/g, '@-@-@-@-@-@');
             str = str.replace(/@@@@@@@@@/g, '@-@-@-@-@');
             str = str.replace(/@@@@@@@/g, '@-@-@-@');
             str = str.replace(/@@@@@/g, '@-@-@');
+            str = str.replace(/@@@@/g, '@-@-@');
             str = str.replace(/@@@/g, '@-@');
             var str_arr = str.split(/[@]+/);
 
