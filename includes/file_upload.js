@@ -72,8 +72,7 @@ exports.file_upload_64 = function(req, res) {
 
 // ===== Wine specfic =====
 
-// store file contents to DB
-var store_contents = function(pdb, file, proc_name){
+var read_wine_file = function(file){
   return new Promise((resolve,reject)=>{
     try {
       var workbook = xlsx.readFile(file);
@@ -83,8 +82,18 @@ var store_contents = function(pdb, file, proc_name){
       console.log(err);
       reject({http_code: 500, message: 'Failed to read xl file'})
     }
+    resolve(worksheet);
+    console.log(typeof worksheet);
+  })
+}
 
-    pdb.proc(proc_name, worksheet)
+// store file contents to DB
+var store_contents = function(pdb, file, proc_name){
+  return new Promise((resolve,reject)=>{
+    read_wine_file(file)
+    .then(worksheet => {
+      return pdb.proc(proc_name, worksheet)
+    })
     .then(data => {
       // TODO: email rep with link
       // console.log(data)
