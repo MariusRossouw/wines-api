@@ -45,7 +45,7 @@ if (!plv8.ufn){
     graph_months = months_ordered;
   }
 
-// ====================== WHERE ====================== 
+// ====================== WHERE ======================
 
 var where = ` `;
 
@@ -180,7 +180,7 @@ if(http_req.body.filters.reps){
   if(product_types){
     type_where += ` and t.product_id in (
       select p.product_id
-      tb_product p 
+      tb_product p
       where p.product_id = t.product_id
       and p.product_type_id in(`+product_types_str+`)
     ) `;
@@ -208,7 +208,7 @@ if(http_req.body.filters.reps){
     select distinct mer.merchant_name as name,
     mer.merchant_id,
     (
-      select round(coalesce(sum(t.sale),0),2) 
+      select round(coalesce(sum(t.sale),0),2)
       from tb_transactions t
       where mer.merchant_id = t.merchant_id
       `+product_type_filter+`
@@ -222,7 +222,7 @@ if(http_req.body.filters.reps){
   var merchants_bottom = plv8.execute(sql);
 
   result.data.bottom5_merchants = merchants_bottom;
-  
+
   return (result);
 
 $$ LANGUAGE plv8;

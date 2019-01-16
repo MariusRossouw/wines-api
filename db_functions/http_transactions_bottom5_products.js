@@ -45,8 +45,7 @@ if (!plv8.ufn){
     graph_months = months_ordered;
   }
 
-
-// ====================== WHERE ====================== 
+// ====================== WHERE ======================
 
 var where = ` `;
 
@@ -154,15 +153,19 @@ if(http_req.body.filters.reps){
   var temp_str = ``;
   var product_type_filter_month = ``;
   var type_where = '';
+  var budget_where = ` `;
 
   if(merchant_codes){
     type_where += ` and t.merchant_id in (select merchant_id from tb_merchant m where m.code in(`+codes_str+`) and m.merchant_id = t.merchant_id) `;
+    budget_where += ` and b.merchant_id in (select merchant_id from tb_merchant m where m.code in(`+codes_str+`) and m.merchant_id = b.merchant_id) `;
   }
   if(merchant_groups){
     type_where += ` and t.merchant_id in (select merchant_id from tb_merchant m where m.merchant_group_id in(`+groups_str+`) and m.merchant_id = t.merchant_id) `;
+    budget_where += ` and b.merchant_id in (select merchant_id from tb_merchant m where m.merchant_group_id in(`+groups_str+`) and m.merchant_id = b.merchant_id) `;
   }
   if(merchant_filter){
     type_where += ` and t.merchant_id in(`+merchants_str+`)  `;
+    budget_where += ` and b.merchant_id in (select merchant_id from tb_merchant m where m.merchant_id in(`+merchants_str+`) and m.merchant_id = b.merchant_id) `;
   }
   if(wine_farms){
     type_where += ` and t.product_id in (
@@ -171,23 +174,50 @@ if(http_req.body.filters.reps){
       where wfpm.product_id = t.product_id
       and wfpm.wine_farm_id in (`+wine_farm_str+`)
     ) `;
+    budget_where += ` and b.merchant_id in (
+      select t.merchant_id
+      from tb_transactions t
+      inner join tb_wine_farm_product_map wfpm on wfpm.product_id = t.product_id
+      where t.merchant_id = b.merchant_id
+      and wfpm.wine_farm_id in (`+wine_farm_str+`)
+    ) `;
   }
   if(province_filter){
     type_where += ` and t.merchant_id in (select merchant_id from tb_merchant m where m.province_id in(`+merchants_str+`) and m.merchant_id = t.merchant_id) `;
+    budget_where += ` and b.merchant_id in (select merchant_id from tb_merchant m where m.province_id in(`+merchants_str+`) and m.merchant_id = b.merchant_id) `;
   }
   if(products){
-    type_where += ` and t.product_id in(`+products_str+`) `;
+    type_where += ` and t.product_id in(` + products_str + `) `;
+    budget_where += ` and b.merchant_id in (
+      select t.merchant_id
+      from tb_transactions t
+      where t.merchant_id = b.merchant_id
+      and t.product_id in(`+products_str+`)
+    ) `;
   }
   if(product_types){
     type_where += ` and t.product_id in (
       select p.product_id
-      tb_product p 
+      tb_product p
       where p.product_id = t.product_id
+      and p.product_type_id in(`+product_types_str+`)
+    ) `;
+    budget_where += ` and b.merchant_id in (
+      select t.merchant_id
+      from tb_transactions t
+      inner join tb_product p on p.product_id = t.product_id
+      where t.merchant_id = b.merchant_id
       and p.product_type_id in(`+product_types_str+`)
     ) `;
   }
   if(reps){
-    type_where += ` and t.profile_id in(`+reps_str+`) `;
+    type_where += ` and t.profile_id in(` + reps_str + `) `;
+    budget_where += ` and b.merchant_id in (
+      select t.merchant_id
+      from tb_transactions t
+      where t.merchant_id = b.merchant_id
+      and t.profile_id in(`+reps_str+`)
+    ) `;
   }
 
 // ****************** budget and sale ******************
@@ -204,25 +234,39 @@ if(http_req.body.filters.reps){
   years_filter = temp_years.substr(0, (temp_years.length-1));
   product_type_filter += ` and ( t.transaction_year in( `+years_filter+` ) and t.transaction_month in (`+product_type_filter_month+`) ) `;
 
-// ****************** bottom5 products ******************
-  var sql = `select * from (select distinct prod.product_name as name,
-    prod.product_id,
+// ****************** bottom5 merchants ******************
+  var sql = `select * from (
+    select distinct mer.merchant_name as name,
+    mer.merchant_id,
     (
-      select round(coalesce(sum(t.sale),0),2) 
+      select round(coalesce(sum(t.sale),0),2)
       from tb_transactions t
-      where prod.product_id = t.product_id
+      where mer.merchant_id = t.merchant_id
       `+product_type_filter+`
   `;
 
   sql += type_where;
 
-  sql += `) as value
-    from tb_product prod ) x order by x.value asc limit 5;`;
+  sql += `) as value,
+  (
+    select round(coalesce(sum(b.budget_amount),0),2)
+    from tb_budget b
+    where mer.merchant_id = b.merchant_id and
+    b.budget_month ~* concat(substr($1, 0, 4), substr($2, (char_length($2)-1) , (char_length($2)-1)))
+    `+product_type_filter+`
+  `;
 
-  var products_bottom = plv8.execute(sql);
+  sql += budget_where;
 
+sql += `) as budget,
+round((value * 100.0) / budget, 2) AS perform
+    from tb_merchant mer ) x order by x.perform asc limit 5;`;
 
-  result.data.bottom5_products = products_bottom;
+result.query = sql;
+// return (result);
+  var merchants_bottom = plv8.execute(sql);
+
+  result.data.bottom5_merchants = merchants_bottom;
 
   return (result);
 
