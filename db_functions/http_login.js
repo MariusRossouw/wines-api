@@ -464,6 +464,121 @@ if (!plv8.ufn) {
       filters.provinces = provinces;
     }
 
+    if(is_farm){
+      // ===== years =====
+      var s = `select distinct transaction_year
+      from tb_transactions
+      where profile_id in($1);`;
+      var sres = plv8.execute(s,profile.profile_id);
+      var years = sres;
+
+      filters.years = years;
+
+      // ===== codes =====
+      var s = `select distinct m.code from tb_merchant m
+      inner join tb_merchant_profile_map mp on mp.merchant_id = m.merchant_id
+      where mp.profile_id in($1);`;
+      var sres = plv8.execute(s,profile.profile_id);
+      var codes = sres;
+
+      filters.codes = codes;
+
+      // ===== merchant_groups =====
+      var s = `select distinct mg.merchant_group_id, mg.group_name from tb_merchant_group mg
+      inner join tb_merchant m on m.merchant_group_id = mg.merchant_group_id
+      inner join tb_merchant_profile_map mp on mp.merchant_id = m.merchant_id
+      where mp.profile_id in($1);`;
+      var sres = plv8.execute(s,profile.profile_id);
+      var merchant_groups = sres;
+
+      filters.merchant_groups = merchant_groups;
+
+      // ===== merchants =====
+      var s = `select distinct m.merchant_id, m.merchant_name from tb_merchant m
+      inner join tb_merchant_profile_map mp on mp.merchant_id = m.merchant_id
+      where mp.profile_id in($1);`;
+      var sres = plv8.execute(s,profile.profile_id);
+      var merchants = sres;
+
+      filters.merchants = merchants;
+
+      // ===== wine_farms =====
+      var s = `select wine_farm_id, farm_name from tb_wine_farm
+      where wine_farm_id in (
+        select farm_id
+        from tb_manager_farm_map mrm
+        where mrm.manager_id = $1
+      );`;
+      var sres = plv8.execute(s,profile.profile_id);
+      var wine_farms = sres;
+
+      filters.wine_farms = wine_farms;
+
+      // ===== products =====
+      var s = `select distinct product_id, description as product_name from tb_product p
+      where p.product_id in(
+        select product_id 
+        from tb_wine_farm_product_map
+        where wine_farm_id in (
+          select farm_id 
+          from tb_manager_farm_map 
+          where manager_id = $1
+        )
+      );`;
+      var sres = plv8.execute(s,profile.profile_id);
+      var products = sres;
+
+      filters.products = products;
+
+      // ===== types =====
+      var s = `select product_type_id, product_type from tb_product_type
+      where product_type_id in(
+      select distinct product_type_id from tb_product p
+      where p.product_id in(
+        select product_id 
+        from tb_wine_farm_product_map
+        where wine_farm_id in (
+          select farm_id 
+          from tb_manager_farm_map 
+          where manager_id = $1
+        )
+      );`;
+      var sres = plv8.execute(s,profile.profile_id);
+      var types = sres;
+
+      filters.types = types;
+
+      // ===== reps =====
+      var s = `select profile_id, rep_name from tb_profile where rep_name is not null and profile_id in(
+          select distinct rep_id
+          from tb_manager_rep_map mrm
+          where mrm.manager_id = $1
+        );`;
+      var sres = plv8.execute(s,profile.profile_id);
+      var reps = sres;
+
+      filters.reps = reps;
+
+      // ===== provinces =====
+      var s = `select province_id, province_name from tb_province
+      where province_id in(
+      select distinct m.province_id from tb_merchant m
+      where m.merchant_id in(
+        select t.merchant_id
+        from tb_transactions t where t.profile_id in(
+          select rep_id
+          from tb_manager_rep_map mrm
+          where mrm.manager_id = $1
+        )
+      ));`;
+      var sres = plv8.execute(s,profile.profile_id);
+      var provinces = sres;
+
+      filters.provinces = provinces;
+    }
+
+    
+
 // ********* END FILTERS *********
 
     } else {

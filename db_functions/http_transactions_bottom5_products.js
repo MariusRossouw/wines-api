@@ -10,6 +10,7 @@ if (!plv8.ufn){
     error_code : "",
     message : "",
     data : {
+      bottom5_products: []
     },
     errors : []
   };
@@ -44,6 +45,8 @@ if (!plv8.ufn){
   }else{
     graph_months = months_ordered;
   }
+
+  var months_abbrv = [];
 
 // ====================== WHERE ======================
 
@@ -151,6 +154,7 @@ if(http_req.body.filters.reps){
 
   var product_type_filter = ``;
   var temp_str = ``;
+  var temp_str2 = ``;
   var product_type_filter_month = ``;
   var type_where = '';
   var budget_where = ` `;
@@ -221,17 +225,20 @@ if(http_req.body.filters.reps){
   }
 
 // ****************** budget and sale ******************
- var years_filter = ``;
+  var years_filter = ``;
   var temp_years = ``;
+  var budget_date_filter = '';
   for(var a = 0; a < years.length; a++){
     for(var b = 0; b < graph_months.length; b++){
       temp_str += `'`+graph_months[b]+`',`;
+      temp_str2 += ` budget_month ~* '`+graph_months[b].substr(0,3)+years[a].substr(2,3) + `' or`;
     }
 
     product_type_filter_month = temp_str.substr(0, (temp_str.length-1));
     temp_years += `'`+years[a] + `',`;
   };
   years_filter = temp_years.substr(0, (temp_years.length-1));
+  budget_date_filter = ` and (` + temp_str2.substr(0, (temp_str2.length-2)) + `) `;
   product_type_filter += ` and ( t.transaction_year in( `+years_filter+` ) and t.transaction_month in (`+product_type_filter_month+`) ) `;
 
 // ****************** bottom5 merchants ******************
@@ -251,22 +258,53 @@ if(http_req.body.filters.reps){
   (
     select round(coalesce(sum(b.budget_amount),0),2)
     from tb_budget b
-    where mer.merchant_id = b.merchant_id and
-    b.budget_month ~* concat(substr($1, 0, 4), substr($2, (char_length($2)-1) , (char_length($2)-1)))
-    `+product_type_filter+`
+    where mer.merchant_id = b.merchant_id 
+    `+budget_date_filter+`
   `;
 
   sql += budget_where;
 
-sql += `) as budget,
-round((value * 100.0) / budget, 2) AS perform
-    from tb_merchant mer ) x order by x.perform asc limit 5;`;
+  sql += `) as budget,
+  case when   (
+    select round(coalesce(sum(b.budget_amount),0),2)
+    from tb_budget b
+    where mer.merchant_id = b.merchant_id
+     `+budget_date_filter+`
+  ) > 0 then
+  round(
+  ((
+    (
+      select round(coalesce(sum(t.sale),0),2)
+      from tb_transactions t
+      where mer.merchant_id = t.merchant_id
+    `+product_type_filter+` `;
+
+  sql += type_where;
+
+  sql += `
+  )
+  /
+    (
+      select round(coalesce(sum(b.budget_amount),0),2)
+      from tb_budget b
+      where mer.merchant_id = b.merchant_id
+    `+budget_date_filter+`
+  `;
+
+  sql += budget_where;
+
+  sql += `
+  )
+  ) * 100)
+  ,2
+  ) else 0 end  AS perform
+  from tb_merchant mer ) x order by x.perform asc limit 5;`;
 
 result.query = sql;
 // return (result);
-  var merchants_bottom = plv8.execute(sql);
+  var products_bottom = plv8.execute(sql);
 
-  result.data.bottom5_merchants = merchants_bottom;
+  result.data.bottom5_products = products_bottom;
 
   return (result);
 
