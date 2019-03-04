@@ -19,6 +19,7 @@ DROP TABLE IF EXISTS tb_entity_document_map;
 DROP TABLE IF EXISTS tb_entity_type;
 DROP TABLE IF EXISTS tb_document;
 DROP TABLE IF EXISTS tb_manager_rep_map;
+DROP TABLE IF EXISTS tb_manager_farm_map;
 drop table IF EXISTS tb_profile;
 DROP TABLE IF EXISTS tb_type;
 DROP TABLE IF EXISTS tb_division;
@@ -180,6 +181,18 @@ CREATE TABLE IF NOT EXISTS tb_manager_rep_map(
   CONSTRAINT u_manager_rep UNIQUE (manager_id,rep_id)
 );
 
+CREATE TABLE IF NOT EXISTS tb_manager_farm_map(
+  manager_farm_id serial primary key,
+  manager_id int references tb_profile(profile_id),
+  farm_id int references tb_wine_farm(wine_farm_id),
+
+  is_active boolean default true,
+  jdata jsonb,
+  create_time timestamp without time zone default (now() at time zone 'utc'),
+  update_time timestamp without time zone default (now() at time zone 'utc'),
+  CONSTRAINT u_manager_farm UNIQUE (manager_id,farm_id)
+);
+
 CREATE TABLE IF NOT EXISTS tb_document(
   document_id serial primary key,
   server_path text,
@@ -229,7 +242,7 @@ CREATE TABLE IF NOT EXISTS tb_merchant(
   province_id INTEGER references tb_province(province_id),
   merchant_group_id INTEGER references tb_merchant_group(merchant_group_id),
 
-  code varchar(10),
+  code varchar(50),
   account varchar(50),
 
   abrv VARCHAR(50),

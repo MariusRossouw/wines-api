@@ -26,7 +26,7 @@ if (!plv8.ufn) {
     return(result);
   }
 
-  if (!http_req.body.password || http_req.body.password.trim().length == 0) { 
+  if (!http_req.body.password || http_req.body.password.trim().length == 0) {
     result.http_code = 403;
     result.message = 'password required';
     return(result);
@@ -81,7 +81,7 @@ if (!plv8.ufn) {
 
       if (query_result1[0].address_id > 0) {
         var profile_addr_id = query_result1[0].address_id;
-  
+
         var s_addr = "select \
           a.address_line_1, \
           a.address_line_2, \
@@ -91,11 +91,11 @@ if (!plv8.ufn) {
           p.name province \
           from tb_address a \
           left join tb_province p on a.physical_province_id = p.id \
-          where a.id = $1; "; 
-  
+          where a.id = $1; ";
+
         plv8.elog(INFO, s1, null, 2);
         var query_result_addr = plv8.execute(s_addr,profile_addr_id);
-  
+
         if(query_result_addr.length > 0) {
           addr_details.address_line_1 = query_result_addr[0].address_line_1 ;
           addr_details.address_line_2 = query_result_addr[0].address_line_2 ;
@@ -105,7 +105,7 @@ if (!plv8.ufn) {
           addr_details.province = query_result_addr[0].province ;
         }
       }
-      
+
       if(query_result[0].change_password == true){
         result.http_code = 202;
         result.message = 'Please change your password';
@@ -138,7 +138,7 @@ if (!plv8.ufn) {
         p.name province \
         from tb_address a \
         left join tb_province p on a.physical_province_id = p.id \
-        where a.id = $1; "; 
+        where a.id = $1; ";
 
       plv8.elog(INFO, s1, null, 2);
       var query_result_addr = plv8.execute(s_addr,profile_addr_id);
@@ -169,10 +169,11 @@ if (!plv8.ufn) {
     var profile = query_result[0];
     var is_rep = profile.type == 'Rep' ? true : false;
     var is_manager = profile.type == 'Manager' ? true : false;
+    var is_farm = profile.type == 'Farm' ? true : false;
 
     var filters = {};
 
-    if(!is_rep && !is_manager){
+    if(!is_rep && !is_manager && !is_farm){
       // ===== years =====
       var s = `select distinct transaction_year from tb_transactions;`;
       var sres = plv8.execute(s);
@@ -275,10 +276,10 @@ if (!plv8.ufn) {
       // ===== wine_farms =====
       var s = `select wine_farm_id, farm_name from tb_wine_farm
         where wine_farm_id in (
-        select distinct wine_farm_id 
-        from tb_wine_farm_product_map wp 
+        select distinct wine_farm_id
+        from tb_wine_farm_product_map wp
         where wp.product_id in(
-          select product_id 
+          select product_id
           from tb_transactions t where t.profile_id = $1
         ));`;
       var sres = plv8.execute(s,profile.profile_id);
@@ -287,9 +288,9 @@ if (!plv8.ufn) {
       filters.wine_farms = wine_farms;
 
       // ===== products =====
-      var s = `select distinct product_id, description as product_name from tb_product p 
+      var s = `select distinct product_id, description as product_name from tb_product p
       where p.product_id in(
-        select product_id 
+        select product_id
         from tb_transactions t where t.profile_id = $1
       );`;
       var sres = plv8.execute(s,profile.profile_id);
@@ -300,9 +301,9 @@ if (!plv8.ufn) {
       // ===== types =====
       var s = `select product_type_id, product_type from tb_product_type
       where product_type_id in(
-      select distinct product_type_id from tb_product p 
+      select distinct product_type_id from tb_product p
       where p.product_id in(
-        select product_id 
+        select product_id
         from tb_transactions t where t.profile_id = $1
       ));`;
       var sres = plv8.execute(s,profile.profile_id);
@@ -318,9 +319,9 @@ if (!plv8.ufn) {
       filters.reps = reps;
 
       // ===== provinces =====
-      var s = `select province_id, province_name from tb_province 
+      var s = `select province_id, province_name from tb_province
       where province_id in(
-      select distinct m.province_id from tb_merchant m 
+      select distinct m.province_id from tb_merchant m
       where m.merchant_id in(
         select t.merchant_id
         from tb_transactions t where t.profile_id = $1
@@ -332,11 +333,11 @@ if (!plv8.ufn) {
     }
     if(is_manager){
       // ===== years =====
-      var s = `select distinct transaction_year 
-      from tb_transactions 
+      var s = `select distinct transaction_year
+      from tb_transactions
       where profile_id in(
-        select rep_id 
-        from tb_manager_rep_map mrm 
+        select rep_id
+        from tb_manager_rep_map mrm
         where mrm.manager_id = $1
       );`;
       var sres = plv8.execute(s,profile.profile_id);
@@ -348,8 +349,8 @@ if (!plv8.ufn) {
       var s = `select distinct m.code from tb_merchant m
       inner join tb_merchant_profile_map mp on mp.merchant_id = m.merchant_id
       where mp.profile_id in(
-        select rep_id 
-        from tb_manager_rep_map mrm 
+        select rep_id
+        from tb_manager_rep_map mrm
         where mrm.manager_id = $1
       );`;
       var sres = plv8.execute(s,profile.profile_id);
@@ -362,8 +363,8 @@ if (!plv8.ufn) {
       inner join tb_merchant m on m.merchant_group_id = mg.merchant_group_id
       inner join tb_merchant_profile_map mp on mp.merchant_id = m.merchant_id
       where mp.profile_id in(
-        select rep_id 
-        from tb_manager_rep_map mrm 
+        select rep_id
+        from tb_manager_rep_map mrm
         where mrm.manager_id = $1
       );`;
       var sres = plv8.execute(s,profile.profile_id);
@@ -375,8 +376,8 @@ if (!plv8.ufn) {
       var s = `select distinct m.merchant_id, m.merchant_name from tb_merchant m
       inner join tb_merchant_profile_map mp on mp.merchant_id = m.merchant_id
       where mp.profile_id in(
-        select rep_id 
-        from tb_manager_rep_map mrm 
+        select rep_id
+        from tb_manager_rep_map mrm
         where mrm.manager_id = $1
       );`;
       var sres = plv8.execute(s,profile.profile_id);
@@ -387,13 +388,13 @@ if (!plv8.ufn) {
       // ===== wine_farms =====
       var s = `select wine_farm_id, farm_name from tb_wine_farm
       where wine_farm_id in (
-      select distinct wine_farm_id 
-      from tb_wine_farm_product_map wp 
+      select distinct wine_farm_id
+      from tb_wine_farm_product_map wp
       where wp.product_id in(
-        select product_id 
+        select product_id
         from tb_transactions t where t.profile_id in(
-          select rep_id 
-          from tb_manager_rep_map mrm 
+          select rep_id
+          from tb_manager_rep_map mrm
           where mrm.manager_id = $1
         )
       ));`;
@@ -403,12 +404,12 @@ if (!plv8.ufn) {
       filters.wine_farms = wine_farms;
 
       // ===== products =====
-      var s = `select distinct product_id, description as product_name from tb_product p 
+      var s = `select distinct product_id, description as product_name from tb_product p
       where p.product_id in(
-        select product_id 
+        select product_id
         from tb_transactions t where t.profile_id in(
-          select rep_id 
-          from tb_manager_rep_map mrm 
+          select rep_id
+          from tb_manager_rep_map mrm
           where mrm.manager_id = $1
         )
       );`;
@@ -420,12 +421,12 @@ if (!plv8.ufn) {
       // ===== types =====
       var s = `select product_type_id, product_type from tb_product_type
       where product_type_id in(
-      select distinct product_type_id from tb_product p 
+      select distinct product_type_id from tb_product p
       where p.product_id in(
-        select product_id 
+        select product_id
         from tb_transactions t where t.profile_id in(
-          select rep_id 
-          from tb_manager_rep_map mrm 
+          select rep_id
+          from tb_manager_rep_map mrm
           where mrm.manager_id = $1
         )
       ));`;
@@ -436,8 +437,8 @@ if (!plv8.ufn) {
 
       // ===== reps =====
       var s = `select profile_id, rep_name from tb_profile where rep_name is not null and profile_id in(
-          select distinct rep_id 
-          from tb_manager_rep_map mrm 
+          select distinct rep_id
+          from tb_manager_rep_map mrm
           where mrm.manager_id = $1
         );`;
       var sres = plv8.execute(s,profile.profile_id);
@@ -446,14 +447,14 @@ if (!plv8.ufn) {
       filters.reps = reps;
 
       // ===== provinces =====
-      var s = `select province_id, province_name from tb_province 
+      var s = `select province_id, province_name from tb_province
       where province_id in(
-      select distinct m.province_id from tb_merchant m 
+      select distinct m.province_id from tb_merchant m
       where m.merchant_id in(
         select t.merchant_id
         from tb_transactions t where t.profile_id in(
-          select rep_id 
-          from tb_manager_rep_map mrm 
+          select rep_id
+          from tb_manager_rep_map mrm
           where mrm.manager_id = $1
         )
       ));`;

@@ -46,7 +46,7 @@ if (!plv8.ufn){
   }
 
 
-// ====================== WHERE ====================== 
+// ====================== WHERE ======================
 
 var where = ` `;
 
@@ -180,7 +180,7 @@ if(http_req.body.filters.reps){
   if(product_types){
     type_where += ` and t.product_id in (
       select p.product_id
-      tb_product p 
+      tb_product p
       where p.product_id = t.product_id
       and p.product_type_id in(`+product_types_str+`)
     ) `;
@@ -204,10 +204,10 @@ if(http_req.body.filters.reps){
   product_type_filter += ` and ( t.transaction_year in( `+years_filter+` ) and t.transaction_month in (`+product_type_filter_month+`) ) `;
 
 // ****************** top5 products ******************
-  var sql = `select * from (select distinct prod.product_name as name,
+  var sql = `select * from (select distinct prod.product_classification as name,
     prod.product_id,
     (
-      select round(coalesce(sum(t.sale),0),2) 
+      select round(coalesce(sum(t.sale),0),2)
       from tb_transactions t
       where prod.product_id = t.product_id
       `+product_type_filter+`

@@ -41,7 +41,7 @@ var result = {
   var query_items = [];
   query_items.push(sql);
   query_items.push(update_items);
-  
+
   var query_result = plv8.execute.apply(this, query_items);
 
   if (query_result && query_result.length > 0) {
@@ -49,5 +49,5 @@ var result = {
   }
 
   return(result);
-  
+
   $$ LANGUAGE plv8;

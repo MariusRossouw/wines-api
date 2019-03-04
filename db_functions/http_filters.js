@@ -14,7 +14,8 @@ $$
                 {year:"2015", selected:false},
                 {year:"2016", selected:false},
                 {year:"2017", selected:false},
-                {year:"2018", selected:false}
+                {year:"2018", selected:false},
+                {year:"2019", selected:false}
             ],
             quarters:[
                 {quarter:"Q1", selected:false},
@@ -190,7 +191,7 @@ $$
     //     result.data.products = query_result;
     // }
 
-    // // white-wine, red-wine, whiskey, water, 
+    // // white-wine, red-wine, whiskey, water,
     // var s4 = "select * from tb_type;";
     // plv8.elog(INFO, s4);
     // var query_result4 = plv8.execute(s4);
@@ -240,11 +241,11 @@ $$
     //     result.data.codes = query_result;
     // }
 
-    
+
 
 
 
 
     return(result);
-  
+
 $$ LANGUAGE plv8;

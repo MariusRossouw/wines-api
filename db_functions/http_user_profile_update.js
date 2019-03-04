@@ -43,7 +43,7 @@ var result = {
     var query_items = [];
     query_items.push(sql);
     query_items.push(update_items);
-    
+
     var query_result = plv8.execute.apply(this, query_items);
 
     if (query_result && query_result.length > 0) {
@@ -54,7 +54,7 @@ var result = {
   for(var i = 0; i < reps.length; i++){
         var rep = reps[i];
         var selected = rep.selected;
-        
+
         var sql_req2 = `select * from tb_manager_rep_map where rep_id = $1 and manager_id = $2;`;
         var sql_res2 = plv8.execute(sql_req2,rep.profile_id, http_req.body.profile_id);
 
@@ -64,7 +64,7 @@ var result = {
 
         if(selected){
             if(!t_id){
-                var i_sql = `insert into tb_manager_rep_map 
+                var i_sql = `insert into tb_manager_rep_map
                 (manager_id,rep_id,is_active)
                 values
                 ($1,$2,$3)
@@ -80,8 +80,40 @@ var result = {
                 var i_sqlres = plv8.execute(i_sql,false,t_id);
             }
         }
+  }
+
+  var farms = http_req.body.farms || [];
+  for(var i = 0; i < farms.length; i++){
+        var farm = farms[i];
+        var selected = farm.selected;
+
+        var sql_req2 = `select * from tb_manager_farm_map where farm_id = $1 and manager_id = $2;`;
+        var sql_res2 = plv8.execute(sql_req2,farm.wine_farm_id, http_req.body.profile_id);
+
+        var t_id = sql_res2.length > 0 ? sql_res2[0].t_id : null;
+
+        var is_enabled = sql_res2.length > 0 ? sql_res2[0].is_active : false;
+
+        if(selected){
+            if(!t_id){
+                var i_sql = `insert into tb_manager_farm_map
+                (manager_id,farm_id,is_active)
+                values
+                ($1,$2,$3)
+                ON CONFLICT (manager_id,farm_id) DO NOTHING;`;
+                var i_sqlres = plv8.execute(i_sql,http_req.body.profile_id,farm.wine_farm_id,true);
+            }else if(!is_active){
+                var i_sql = `update tb_manager_farm_map set is_active = $1 where t_id = $2;`;
+                var i_sqlres = plv8.execute(i_sql,true,t_id);
+            }
+        }else{
+            if(t_id && is_active){
+                var i_sql = `update tb_manager_farm_map set is_active = $1 where t_id = $2;`;
+                var i_sqlres = plv8.execute(i_sql,false,t_id);
+            }
+        }
     }
 
   return(result);
-  
+
   $$ LANGUAGE plv8;
