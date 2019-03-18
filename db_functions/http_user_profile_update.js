@@ -24,7 +24,7 @@ var result = {
     return(result);
   };
 
-  if(!http_req.body.update){
+  if(http_req.body.update){
 
     var s = "update tb_profile set ";
     var obj = http_req.body.update;
